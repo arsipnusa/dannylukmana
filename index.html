@@ -14,15 +14,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <script>
-        // Apply the theme before the first paint (no light flash for dark-mode visitors):
-        // the saved choice if there is one, otherwise the device setting.
-        (function () {
-            var theme = null;
-            try { theme = localStorage.getItem('theme'); } catch (e) {}
-            if (theme !== 'dark' && theme !== 'light') {
-                theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        // Theme, applied before the first paint so there's no flash:
+        // - automatic: dark at night (18:00-06:00, visitor's own clock) or when the device is set to dark
+        // - a manual choice from the toggle holds until the next sunrise/sunset switch, then auto takes over again
+        window.siteTheme = (function () {
+            function isNight(d) { var h = d.getHours(); return h >= 18 || h < 6; }
+            function nextSwitch(d) {
+                var n = new Date(d.getTime());
+                if (d.getHours() < 6) n.setHours(6, 0, 0, 0);
+                else if (d.getHours() < 18) n.setHours(18, 0, 0, 0);
+                else { n.setDate(n.getDate() + 1); n.setHours(6, 0, 0, 0); }
+                return n.getTime();
             }
-            document.documentElement.setAttribute('data-theme', theme);
+            function read(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+            function write(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+            function auto() {
+                var deviceDark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+                return isNight(new Date()) || deviceDark ? 'dark' : 'light';
+            }
+            function current() {
+                var saved = read('theme');
+                var stillValid = Date.now() < Number(read('themeUntil'));
+                return (saved === 'dark' || saved === 'light') && stillValid ? saved : auto();
+            }
+            function choose(theme) { write('theme', theme); write('themeUntil', String(nextSwitch(new Date()))); }
+            function apply(theme) { document.documentElement.setAttribute('data-theme', theme); }
+            apply(current());
+            return { current: current, choose: choose, apply: apply };
         })();
     </script>
 
@@ -291,11 +309,31 @@
 .play-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 2rem; }
 .play-card { display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); background: var(--glass-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.02); text-decoration: none; color: inherit; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
 .play-card:hover, .play-card:focus-visible { transform: translateY(-5px); border-color: var(--text-muted); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
-.play-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #1d2b22; }
+.play-img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #1d2b22; }
 .play-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
 .play-body h3 { font-size: 1.3rem; }
 .play-body p { color: var(--text-muted); font-size: 0.95rem; }
 .play-card:hover .tour-btn, .play-card:focus-visible .tour-btn { background: var(--text-main); color: var(--bg-color); }
+.play-card-ar { cursor: pointer; }
+.play-card-ar .tour-btn { margin-top: auto; font: inherit; font-size: 0.85rem; font-weight: 600; }
+.play-credit { font-size: 0.8125rem; color: var(--text-muted); }
+.play-credit a { color: inherit; }
+
+/* --- AR MODAL: QR + steps on laptops, "view in your room" on phones --- */
+.ar-modal { max-width: 760px; }
+.ar-desktop { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; margin-top: 0.5rem; }
+/* ~10 cm wide on a typical laptop screen, white backing so the camera can read it in dark mode too */
+.ar-qr { display: block; width: min(380px, 70vw); height: auto; background: #fff; border-radius: 12px; }
+.ar-steps { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.9rem; color: var(--text-main); }
+.ar-tip { color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; }
+.ar-tip a { color: var(--text-main); }
+.ar-mobile { display: none; text-align: center; color: var(--text-main); }
+.ar-mobile .btn { display: inline-flex; margin: 1.25rem auto 0.5rem; }
+.is-phone .ar-desktop { display: none; }
+.is-phone .ar-mobile { display: block; }
+@media (max-width: 768px) {
+    .ar-desktop { grid-template-columns: 1fr; justify-items: center; gap: 1.25rem; }
+}
 
 /* --- NEW SERVICES SECTION --- */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
@@ -610,6 +648,17 @@ footer {
                     <span class="tour-btn">Open Project <span class="material-icons-round">open_in_new</span></span>
                 </div>
             </a>
+            <!-- Not a link: AR needs a phone, so the button opens a guide that adapts to the device -->
+            <article class="play-card play-card-ar reveal-element" id="arCard">
+                <img src="images/ar-burj-khalifa-preview.png" alt="3D render of the Burj Khalifa model standing on its QR code target" class="play-img" loading="lazy" width="800" height="500">
+                <div class="play-body">
+                    <h3>AR Burj Khalifa</h3>
+                    <p>Scan a QR code and a scale model of the Burj Khalifa appears standing on it, with narration in 10 languages. On a phone you can also place a 1.5 m version in your room.</p>
+                    <div><span class="tag">MindAR</span><span class="tag">A-Frame</span><span class="tag">AR Quick Look</span></div>
+                    <button class="icon-btn tour-btn" onclick="openArModal()">Try AR <span class="material-icons-round" aria-hidden="true">view_in_ar</span></button>
+                    <p class="play-credit">3D model: <a href="https://sketchfab.com/3d-models/free-burj-khalifa-dubai-c1d6f5884c9c4a56b8d8f9c5555f1902" target="_blank" rel="noopener">Burj Khalifa Dubai</a> by <a href="https://sketchfab.com/3Duae" target="_blank" rel="noopener">SDC PERFORMANCE</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></p>
+                </div>
+            </article>
         </div>
     </section>
 
@@ -899,14 +948,33 @@ footer {
 
     <div id="certModal" class="modal" role="dialog" aria-modal="true" aria-label="Credential preview"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeCert()" aria-label="Close">&times;</button><iframe id="certIframe" src="" allow="autoplay" title="Credential document"></iframe></div></div>
     <div id="tourModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tourModalTitle"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeTourModal()" aria-label="Close">&times;</button><h2 class="modal-title" id="tourModalTitle">Select Destination</h2><div class="tour-grid"><a class="tour-card" href="https://semarang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/960px-Lawang_Sewu_in_Semarang_City.jpg&w=600&h=300&fit=cover&output=webp" alt="Lawang Sewu, Semarang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Semarang City</h3><p>Discover the historic charm and modern vibes of Central Java's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jakarta.govirtual.id/urban-tourism/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/960px-Jakarta_CBD.jpg&w=600&h=300&fit=cover&output=webp" alt="Jakarta skyline" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jakarta City</h3><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtualtour.lampungselatankab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/960px-Bakauheni_Port.jpg&w=600&h=300&fit=cover&output=webp" alt="Bakauheni Port, Lampung Selatan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lampung Selatan</h3><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtual-tour.tangerangkab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Kantor_bupati_tangerang_-_panoramio.jpg/960px-Kantor_bupati_tangerang_-_panoramio.jpg&w=600&h=300&fit=cover&a=top&output=webp" alt="Tangerang Regent's Office, Tigaraksa" class="tour-img" loading="lazy"><div class="tour-info"><h3>Tangerang Regency</h3><p>Navigate through the modern developments and public facilities of Banten.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://lahat.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/960px-Sunrise_Bukit_Besak.jpg&w=600&h=300&fit=cover&a=bottom&output=webp" alt="Sunrise at Bukit Besak, Lahat" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lahat Regency</h3><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://bogor.govirtual.id/" target="_blank" rel="noopener"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img" loading="lazy"><div class="tour-info"><h3>Bogor Regency</h3><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://medan.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Maimun_Palace_Medan_Indonesia.jpg/960px-Maimun_Palace_Medan_Indonesia.jpg&w=600&h=300&fit=cover&output=webp" alt="Maimun Palace, Medan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Medan City</h3><p>Explore the royal heritage and vibrant urban life of North Sumatra's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://deliserdang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Kualanamu_Airport_Terminal_Building.jpg/960px-Kualanamu_Airport_Terminal_Building.jpg&w=600&h=300&fit=cover&output=webp" alt="Kualanamu International Airport, Deli Serdang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Deli Serdang Regency</h3><p>Tour the Lubuk Pakam city center and public facilities of North Sumatra's gateway regency.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jatiluwih.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Jatiluwih_UNESCO_rice_terraces.jpg/960px-Jatiluwih_UNESCO_rice_terraces.jpg&w=600&h=300&fit=cover&output=webp" alt="Jatiluwih rice terraces, Bali" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jatiluwih Village</h3><p>Wander through Bali's UNESCO-listed rice terraces in immersive 360° views.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a></div></div></div>
+    <div id="arModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="arModalTitle">
+        <div class="modal-content glass ar-modal">
+            <button class="icon-btn close-btn" onclick="closeArModal()" aria-label="Close">&times;</button>
+            <h2 class="modal-title" id="arModalTitle">Try the AR Burj Khalifa</h2>
+            <!-- Laptop: the QR on screen is both the link and the AR target, so nothing needs printing -->
+            <div class="ar-desktop">
+                <img src="images/ar-burj-khalifa-qr.svg" alt="QR code that opens the AR experience and is also its camera target" class="ar-qr" width="380" height="380">
+                <div>
+                    <ol class="ar-steps">
+                        <li><strong>Scan this QR</strong> with your phone camera to open the AR page.</li>
+                        <li><strong>Tap Start</strong> and allow camera access.</li>
+                        <li><strong>Point your phone back at this QR.</strong> The Burj Khalifa appears standing on it.</li>
+                    </ol>
+                    <p class="ar-tip">Tip: turn your screen brightness up and keep the whole QR in view.</p>
+                </div>
+            </div>
+            <!-- Phone: there's no second screen to scan, so place the model in the room instead -->
+            <div class="ar-mobile">
+                <p>Place a 1.5 m model of the Burj Khalifa in your room and walk around it. Pinch to resize.</p>
+                <a class="btn btn-primary" id="arRoomBtn" href="https://webview-govirtual.id/govirtual-ar-burj-khalifa/">View in your room <span class="material-icons-round" aria-hidden="true">view_in_ar</span></a>
+                <p class="ar-tip">Have the QR on another screen or printed? <a href="https://webview-govirtual.id/govirtual-ar-burj-khalifa/" target="_blank" rel="noopener">Open the camera AR</a> and point your phone at it.</p>
+            </div>
+        </div>
+    </div>
 
 <script>
         // --- CONFIGURATION & UTILS ---
-        // Storage can be blocked (private modes, some in-app browsers); that must never stop the script
-        const store = {
-            get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
-            set(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
-        };
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const root = document.documentElement;
         const toggleBtn = document.getElementById('theme-toggle');
@@ -915,7 +983,7 @@ footer {
         const navItems = document.querySelectorAll('.nav-link-item');
         const toggleIcon = document.getElementById('toggle-icon');
 
-        // The theme itself is applied in <head> before first paint; this keeps the button in sync
+        // The theme itself is decided in <head> (window.siteTheme); this keeps the button in sync
         function updateIcon(theme) {
             toggleIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
             toggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
@@ -924,10 +992,16 @@ footer {
 
         toggleBtn.addEventListener('click', () => {
             const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            root.setAttribute('data-theme', newTheme);
-            store.set('theme', newTheme);
+            siteTheme.apply(newTheme);
+            siteTheme.choose(newTheme);
             updateIcon(newTheme);
         });
+
+        // Switch at sunrise/sunset while the page stays open (unless a manual choice is still active)
+        setInterval(() => {
+            const theme = siteTheme.current();
+            if (theme !== root.getAttribute('data-theme')) { siteTheme.apply(theme); updateIcon(theme); }
+        }, 60000);
 
         function setMenu(open) {
             navLinks.classList.toggle('active', open);
@@ -997,12 +1071,54 @@ footer {
         function openTourModal() { openModal(tourModal); }
         function closeTourModal() { closeModal(tourModal); }
 
-        window.onclick = function(event) { if (event.target == certModal) closeCert(); if (event.target == tourModal) closeTourModal(); }
+        // --- AR BURJ KHALIFA (the live experience runs on the Govirtual server; its QR points there) ---
+        const AR_URL = 'https://webview-govirtual.id/govirtual-ar-burj-khalifa/';
+        const arModal = document.getElementById('arModal');
+        // Same detection as the AR app: iPhone/iPad -> AR Quick Look, Android -> Scene Viewer, else laptop
+        const arRoomMode = (() => {
+            const a = document.createElement('a');
+            if (a.relList && a.relList.supports && a.relList.supports('ar')) return 'quicklook';
+            if (/Android/i.test(navigator.userAgent)) return 'sceneviewer';
+            return null;
+        })();
+        arModal.classList.toggle('is-phone', arRoomMode !== null);
+        function openArModal() { openModal(arModal); }
+        function closeArModal() { closeModal(arModal); }
+        // Clicking anywhere on the card (except its links) opens the guide too
+        document.getElementById('arCard').addEventListener('click', (event) => {
+            if (!event.target.closest('a, button')) openArModal();
+        });
+        // 500% room model = about 1.5 m tall; both viewers let people pinch to resize
+        document.getElementById('arRoomBtn').addEventListener('click', (event) => {
+            const roomFile = ext => `${AR_URL}room/burj-khalifa-500.${ext}`;
+            if (arRoomMode === 'quicklook') {
+                event.preventDefault();
+                // AR Quick Look only opens from a rel="ar" link that contains an image
+                const a = document.createElement('a');
+                a.rel = 'ar';
+                a.href = roomFile('usdz') + '#allowsContentScaling=1';
+                a.appendChild(document.createElement('img'));
+                a.click();
+            } else if (arRoomMode === 'sceneviewer') {
+                event.preventDefault();
+                const params = new URLSearchParams({ mode: 'ar_preferred', resizable: 'true', title: 'Burj Khalifa' });
+                location.href = `intent://arvr.google.com/scene-viewer/1.2?${params}&file=${encodeURIComponent(roomFile('glb'))}` +
+                    `#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;` +
+                    `S.browser_fallback_url=${encodeURIComponent(AR_URL)};end;`;
+            }
+            // Otherwise the plain link opens the AR page itself
+        });
+
+        window.onclick = function(event) {
+            if (event.target == certModal) closeCert();
+            if (event.target == tourModal) closeTourModal();
+            if (event.target == arModal) closeArModal();
+        }
         document.addEventListener('keydown', (event) => {
             const activeModal = document.querySelector('.modal.active');
             if (event.key === 'Escape') {
                 if (activeModal === certModal) closeCert();
-                else if (activeModal === tourModal) closeTourModal();
+                else if (activeModal) closeModal(activeModal);
                 else if (chatWindow.classList.contains('open')) toggleChat();
                 else if (navLinks.classList.contains('active')) { setMenu(false); hamburger.focus(); }
                 return;
@@ -1057,6 +1173,21 @@ footer {
                 audio.pause(); setPlaying(false);
             }
         });
+
+        // Pause while the visitor is away (another tab, a project opened in a new tab, minimized window)
+        // and pick up where it left off when they come back. Music they paused themselves stays paused.
+        let resumeOnReturn = false;
+        function pauseWhileAway() {
+            if (!audio.paused) { resumeOnReturn = true; audio.pause(); }
+        }
+        function resumeOnBack() {
+            if (!resumeOnReturn) return;
+            resumeOnReturn = false;
+            audio.play().catch(() => setPlaying(false));
+        }
+        document.addEventListener('visibilitychange', () => { if (document.hidden) pauseWhileAway(); else resumeOnBack(); });
+        window.addEventListener('pagehide', pauseWhileAway);
+        window.addEventListener('pageshow', (event) => { if (event.persisted) resumeOnBack(); });
 
         // Greeting follows the visitor's own time of day
         function setGreeting() {
@@ -1178,10 +1309,10 @@ footer {
                 response_en: "Some of my projects: Toko Arsip Nusa, Reinkarnails, Sate Kambing Pak Slamet, Virtual Tour 360°, Teavaro Funnel Manager, and Alodokter Medical Platform."
             },
             playground: {
-                id_keywords: ['terra explorer', 'badung', 'kotabaru', 'peta 3d', 'peta', 'iseng', 'side project', 'playground'],
-                en_keywords: ['terra explorer', 'badung', 'kotabaru', '3d map', 'map', 'side project', 'playground', 'hobby'],
-                response_id: "Di bagian Playground ada project iseng saya: Terra Explorer, peta wisata 3D interaktif untuk Badung (Bali) dan Kotabaru (Kalimantan Selatan), dibuat dengan Three.js.",
-                response_en: "In the Playground section you'll find my side projects: Terra Explorer, interactive 3D tourism maps of Badung (Bali) and Kotabaru (South Kalimantan), built with Three.js."
+                id_keywords: ['terra explorer', 'badung', 'kotabaru', 'peta 3d', 'peta', 'iseng', 'side project', 'playground', 'ar', 'augmented reality', 'burj khalifa', 'burj'],
+                en_keywords: ['terra explorer', 'badung', 'kotabaru', '3d map', 'map', 'side project', 'playground', 'hobby', 'ar', 'augmented reality', 'burj khalifa', 'burj'],
+                response_id: "Di bagian Playground ada project iseng saya: Terra Explorer (peta wisata 3D Badung dan Kotabaru) dan AR Burj Khalifa, model gedung yang muncul di atas QR code. Tekan 'Try AR' di kartunya untuk mencoba.",
+                response_en: "In the Playground section you'll find my side projects: Terra Explorer (3D tourism maps of Badung and Kotabaru) and AR Burj Khalifa, a model that appears on top of a QR code. Press 'Try AR' on its card to try it."
             },
             arsip_nusa: {
                 id_keywords: ['arsip nusa', 'toko arsip', 'umkm', 'landing page', 'website', 'web'],

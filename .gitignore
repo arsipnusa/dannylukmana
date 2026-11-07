@@ -4,3 +4,6 @@ project/*/.mcp.json
 project/*/tools/
 project/*/docs/
 project/*/sample/
+
+# AR Burj Khalifa lives on the Govirtual server (its QR points there); keep the local copy out of this repo
+project/ar-burj-khalifa/
