@@ -9,7 +9,6 @@
     <meta property="og:description" content="Check out my latest projects, virtual tours, and interactive web experiences.">
     <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1920/1920990.png">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1920/1920990.png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
@@ -162,9 +161,6 @@
         .modal-title { font-size: 1.8rem; margin-bottom: 1rem; text-align: center; color: var(--text-main); }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
 
-        /* --- 11. FOOTER --- */
-        footer { text-align: -webkit-center; padding: 4rem 20px; border-top: 1px solid var(--glass-border); color: var(--text-muted); margin-top: 4rem; }
-
         /* --- 12. RESPONSIVE --- */
         @media (max-width: 768px) {
             nav { justify-content: space-between; padding: 1rem 1.5rem; }
@@ -213,8 +209,6 @@
             
             .greeting-badge { right: -10px; bottom: 0; font-size: 0.75rem; }
             .avatar-container { width: 150px; height: 150px; }
-            
-            footer { padding-bottom: 120px; }
 
             /* STACK BUTTONS VERTICALLY ON MOBILE RIGHT */
             .chat-launcher { bottom: 100px; right: 20px; width: 50px; height: 50px; } /* Above Widget */
@@ -379,6 +373,8 @@
 footer {
     margin-top: 6rem;
     padding: 5rem 20px 2rem;
+    text-align: -webkit-center;
+    color: var(--text-muted);
     border-top: 1px solid var(--glass-border);
     background: linear-gradient(to top, rgba(0,0,0,0.02) 0%, transparent 100%);
     position: relative;
@@ -533,7 +529,7 @@ footer {
         <p class="subtitle reveal-element"><span id="typewriter"></span><span class="type-cursor"></span></p>
         <div class="cta-group reveal-element">
             <a href="#projects" class="btn btn-primary">View Projects</a>
-            <a href="https://drive.google.com/drive/folders/1erFo3FMDfxmjo3X-fxbA6-JyP8elH9GM?usp=sharing" class="btn btn-glass" onclick="showToast('Downloading CV... (Demo)')">
+            <a href="https://drive.google.com/drive/folders/1erFo3FMDfxmjo3X-fxbA6-JyP8elH9GM?usp=sharing" class="btn btn-glass" target="_blank" rel="noopener" onclick="showToast('Opening CV in Google Drive...')">
                 Download CV <span class="material-icons-round" style="font-size: 1.1rem;">download</span>
             </a>
             <button class="btn btn-glass" onclick="triggerConfetti()">Let's Talk</button>
@@ -578,7 +574,7 @@ footer {
 
             <div class="card glass tilt-card">
                 <h3>Reinkarnails</h3>
-                <p>Custom reincarnails nail art delivering bold designs, premium quality, and expressive details to elevate your style with unique handcrafted perfection.</p>
+                <p>Custom Reinkarnails nail art delivering bold designs, premium quality, and expressive details to elevate your style with unique handcrafted perfection.</p>
                 <div><span class="tag">HTML/CSS</span><span class="tag">Static Site</span><span class="tag">Serverless</span></div>
                 <button class="btn-view-cert" onclick="window.open('https://arsipnusa.github.io/reinkarnails/', '_blank')" style="width: 100%; text-align: center; margin-top: auto;">
                     Visit Store <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">storefront</span>
@@ -648,7 +644,7 @@ footer {
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">Apr 2022 - Sep 2024 • Surabaya, East Java, Indonesia</div>
                     <h3 style="font-size: 1.25rem;">Keraton Karya Solusi</h3>
                     <div style="font-style: italic; opacity: 0.9;">Frontend Web Developer</div>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted); font-size: 0.95rem;">Dedicated Frontend Web Developer for Teavaro. Privileged to craft and enhance the Funnel Manager website using Vaadin 14, Java, OOP principles.</p>
+                    <p style="margin-top: 0.8rem; color: var(--text-muted); font-size: 0.95rem;">My employer during the Teavaro engagement. Keraton Karya Solusi placed me with Teavaro as a dedicated frontend developer, working from Surabaya.</p>
                 </div>
             </div>
              <div class="timeline-item">
@@ -697,7 +693,7 @@ footer {
                     <p style="color: var(--text-muted); font-weight: 600;">Telkom University</p>
                 </div>
                 <div style="margin-bottom: 1rem;"><p style="font-size: 0.9rem;">Published: 2021</p></div>
-                <button class="btn-view-cert" onclick="openCert('https://openlibrary.telkomuniversity.ac.id/home/catalog/id/174778/slug/deteksi-tremor-lengan-dengan-metode-quaternion-pada-data-imu.html')">View Publication <span class="material-icons-round" style="font-size: 0.9rem; vertical-align: middle;">menu_book</span></button>
+                <button class="btn-view-cert" onclick="window.open('https://openlibrary.telkomuniversity.ac.id/home/catalog/id/174778/slug/deteksi-tremor-lengan-dengan-metode-quaternion-pada-data-imu.html', '_blank')">View Publication <span class="material-icons-round" style="font-size: 0.9rem; vertical-align: middle;">open_in_new</span></button>
             </div>
         </div>
     </section>
@@ -899,7 +895,7 @@ footer {
                 <li><a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank">LinkedIn <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
                 <li><a href="https://github.com/dannylukmana" target="_blank">GitHub <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
                 <li><a href="mailto:dannylukmana.business@gmail.com">Email Me <span class="material-icons-round" style="font-size: 16px;">mail</span></a></li>
-                <li><a href="#">Resume <span class="material-icons-round" style="font-size: 16px;">download</span></a></li>
+                <li><a href="https://drive.google.com/drive/folders/1erFo3FMDfxmjo3X-fxbA6-JyP8elH9GM?usp=sharing" target="_blank" rel="noopener">Resume <span class="material-icons-round" style="font-size: 16px;">download</span></a></li>
             </ul>
         </div>
     </div>
@@ -923,7 +919,7 @@ footer {
     </div>
 
     <div id="certModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeCert()">&times;</span><iframe id="certIframe" src="" allow="autoplay"></iframe></div></div>
-    <div id="tourModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeTourModal()">&times;</span><h2 class="modal-title">Select Destination</h2><div class="tour-grid"><div class="tour-card" onclick="window.open('https://semarang.govirtual.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/1920px-Lawang_Sewu_in_Semarang_City.jpg?auto=format&fit=crop&w=600&q=80" alt="Semarang" class="tour-img"><div class="tour-info"><h4>Semarang City</h4><p>Discover the historic charm and modern vibes of Central Java's capital.</p></div></div><div class="tour-card" onclick="window.open('https://jakarta.govirtual.id/urban-tourism/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/2560px-Jakarta_CBD.jpg?auto=format&fit=crop&w=600&q=80" alt="Jakarta" class="tour-img"><div class="tour-info"><h4>Jakarta City</h4><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p></div></div><div class="tour-card" onclick="window.open('https://virtualtour.lampungselatankab.go.id/tourism/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/1280px-Bakauheni_Port.jpg?auto=format&fit=crop&w=600&q=80" alt="Lampung" class="tour-img"><div class="tour-info"><h4>Lampung Selatan</h4><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p></div></div><div class="tour-card" onclick="window.open('https://virtual-tour.tangerangkab.go.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Bunderan_kota_tangerang_-_panoramio.jpg/1280px-Bunderan_kota_tangerang_-_panoramio.jpg?auto=format&fit=crop&w=600&q=80" alt="Tangerang" class="tour-img"><div class="tour-info"><h4>Tangerang Regency</h4><p>Navigate through the modern developments and public facilities of Banten.</p></div></div><div class="tour-card" onclick="window.open('https://lahat.govirtual.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/1280px-Sunrise_Bukit_Besak.jpg?auto=format&fit=crop&w=600&q=80" alt="Lahat" class="tour-img"><div class="tour-info"><h4>Lahat Regency</h4><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p></div></div><div class="tour-card" onclick="window.open('https://bogor.govirtual.id/', '_blank')"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Lahat" class="tour-img"><div class="tour-info"><h4>Bogor Regency</h4><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p></div></div></div></div></div>
+    <div id="tourModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeTourModal()">&times;</span><h2 class="modal-title">Select Destination</h2><div class="tour-grid"><div class="tour-card" onclick="window.open('https://semarang.govirtual.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/1920px-Lawang_Sewu_in_Semarang_City.jpg?auto=format&fit=crop&w=600&q=80" alt="Semarang" class="tour-img"><div class="tour-info"><h4>Semarang City</h4><p>Discover the historic charm and modern vibes of Central Java's capital.</p></div></div><div class="tour-card" onclick="window.open('https://jakarta.govirtual.id/urban-tourism/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/2560px-Jakarta_CBD.jpg?auto=format&fit=crop&w=600&q=80" alt="Jakarta" class="tour-img"><div class="tour-info"><h4>Jakarta City</h4><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p></div></div><div class="tour-card" onclick="window.open('https://virtualtour.lampungselatankab.go.id/tourism/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/1280px-Bakauheni_Port.jpg?auto=format&fit=crop&w=600&q=80" alt="Lampung" class="tour-img"><div class="tour-info"><h4>Lampung Selatan</h4><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p></div></div><div class="tour-card" onclick="window.open('https://virtual-tour.tangerangkab.go.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Bunderan_kota_tangerang_-_panoramio.jpg/1280px-Bunderan_kota_tangerang_-_panoramio.jpg?auto=format&fit=crop&w=600&q=80" alt="Tangerang" class="tour-img"><div class="tour-info"><h4>Tangerang Regency</h4><p>Navigate through the modern developments and public facilities of Banten.</p></div></div><div class="tour-card" onclick="window.open('https://lahat.govirtual.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/1280px-Sunrise_Bukit_Besak.jpg?auto=format&fit=crop&w=600&q=80" alt="Lahat" class="tour-img"><div class="tour-info"><h4>Lahat Regency</h4><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p></div></div><div class="tour-card" onclick="window.open('https://bogor.govirtual.id/', '_blank')"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img"><div class="tour-info"><h4>Bogor Regency</h4><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p></div></div></div></div></div>
 
     <button class="widget-toggle-btn" id="widgetToggleBtn" aria-label="Toggle Music Widget">
         <span class="material-icons-round">music_note</span>
@@ -932,7 +928,7 @@ footer {
     <div class="floating-widget glass" id="floatingWidget">
         <div class="music-player"><div class="music-info"><span class="music-icon material-icons-round">music_note</span><div class="music-text"><span class="song-title">Lofi Focus Beat</span><span class="artist-name">Chill Vibes</span></div></div><button id="playBtn" class="play-btn"><span class="material-icons-round" id="playIcon">play_arrow</span></button><audio id="audioPlayer" loop><source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg"></audio></div>
         <div class="divider"></div>
-        <div class="status-info"><div id="clock" class="clock">00:00</div><div class="weather"><span class="material-icons-round" style="font-size: 14px;">wb_sunny</span><span>Jakarta, 29°C</span></div></div>
+        <div class="status-info"><div id="clock" class="clock">00:00</div><div class="weather"><span class="material-icons-round" id="weatherIcon" style="font-size: 14px;">location_on</span><span id="weatherText">Jakarta</span></div></div>
     </div>
 
     <div class="cursor-dot" id="cursor-dot"></div>
@@ -1020,6 +1016,23 @@ footer {
             document.getElementById('clock').textContent = `${hours}:${minutes}`; 
         } 
         setInterval(updateClock, 1000); updateClock();
+
+        // Live Jakarta weather from Open-Meteo (free, no API key).
+        // If the request fails, the widget just keeps showing "Jakarta".
+        function weatherIconFor(code, isDay) {
+            if (code <= 1) return isDay ? 'wb_sunny' : 'bedtime';
+            if (code < 51) return 'cloud';
+            if (code < 95) return 'water_drop';
+            return 'flash_on';
+        }
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current=temperature_2m,weather_code,is_day&timezone=Asia%2FJakarta')
+            .then(res => res.ok ? res.json() : Promise.reject(res.status))
+            .then(data => {
+                const current = data.current;
+                document.getElementById('weatherText').textContent = `Jakarta, ${Math.round(current.temperature_2m)}°C`;
+                document.getElementById('weatherIcon').textContent = weatherIconFor(current.weather_code, current.is_day);
+            })
+            .catch(() => {});
 
         const audio = document.getElementById('audioPlayer'); 
         const playBtn = document.getElementById('playBtn'); 
@@ -1151,8 +1164,8 @@ footer {
             experience: {
                 id_keywords: ['kerja', 'pengalaman', 'pernah', 'kantor', 'pt'],
                 en_keywords: ['work', 'experience', 'job', 'office', 'company'],
-                response_id: "Saat ini saya bekerja di Teknologi Govirtual Indonesia. Sebelumnya di Teavaro dan Keraton Karya Solusi.",
-                response_en: "Currently, I work at Teknologi Govirtual Indonesia. Previously at Teavaro and Keraton Karya Solusi."
+                response_id: "Saat ini saya bekerja di Teknologi Govirtual Indonesia. Sebelumnya saya ditempatkan oleh Keraton Karya Solusi sebagai Frontend Developer untuk Teavaro (London).",
+                response_en: "Currently, I work at Teknologi Govirtual Indonesia. Previously, Keraton Karya Solusi placed me as a Frontend Developer for Teavaro (London)."
             },
             contact: {
                 id_keywords: ['kontak', 'hubungi', 'email', 'wa', 'nomor', 'telepon'],
@@ -1161,7 +1174,7 @@ footer {
                 response_en: "Please reach me via email at dannylukmana.business@gmail.com or check the LinkedIn link at the bottom."
             },
             location: {
-                id_keywords: ['lokasi', 'alamat', 'tinggal', 'domisili', 'mana'],
+                id_keywords: ['lokasi', 'alamat', 'tinggal', 'domisili', 'mana', 'dimana'],
                 en_keywords: ['location', 'address', 'live', 'stay', 'where'],
                 response_id: "Saya saat ini berdomisili di Jakarta, Indonesia.",
                 response_en: "I am currently based in Jakarta, Indonesia."
@@ -1169,12 +1182,18 @@ footer {
             projects: {
                 id_keywords: ['proyek', 'project', 'karya', 'bikin', 'buat'],
                 en_keywords: ['project', 'work', 'portfolio', 'make', 'create'],
-                response_id: "Beberapa proyek saya: Virtual Tour 360, Teavaro Funnel Manager, dan Alodokter Medical Platform.",
-                response_en: "Some of my projects: Virtual Tour 360, Teavaro Funnel Manager, and Alodokter Medical Platform."
+                response_id: "Beberapa proyek saya: Toko Arsip Nusa, Reinkarnails, Sate Kambing Pak Slamet, Virtual Tour 360°, Teavaro Funnel Manager, dan Alodokter Medical Platform.",
+                response_en: "Some of my projects: Toko Arsip Nusa, Reinkarnails, Sate Kambing Pak Slamet, Virtual Tour 360°, Teavaro Funnel Manager, and Alodokter Medical Platform."
+            },
+            arsip_nusa: {
+                id_keywords: ['arsip nusa', 'toko arsip', 'umkm', 'landing page', 'website', 'web'],
+                en_keywords: ['arsip nusa', 'msme', 'umkm', 'landing page', 'website', 'web'],
+                response_id: "Lewat brand saya, Toko Arsip Nusa, saya membuat landing page yang terjangkau tanpa biaya hosting untuk membantu UMKM go digital. Contohnya Reinkarnails dan Sate Kambing Pak Slamet.",
+                response_en: "Through my brand, Toko Arsip Nusa, I build affordable landing pages with no hosting cost to help MSMEs go digital. Examples include Reinkarnails and Sate Kambing Pak Slamet."
             },
             landing_page_sate: {
-                id_keywords: ['landing page', 'website', 'sate', 'pak slamet', 'kuliner'],
-                en_keywords: ['landing page', 'website', 'culinary', 'sate', 'pak slamet'],
+                id_keywords: ['sate', 'kambing', 'pak slamet', 'kuliner'],
+                en_keywords: ['culinary', 'sate', 'satay', 'pak slamet'],
                 response_id: "Saya membuat landing page untuk Sate Kambing Pak Slamet sebagai media promosi kuliner legendaris.",
                 response_en: "I designed a landing page for Sate Kambing Pak Slamet as a promotional website for a legendary culinary brand."
             },
@@ -1214,55 +1233,52 @@ footer {
             chatBody.scrollTop = chatBody.scrollHeight; // Auto scroll to bottom
         }
 
+        // Common words that only hint at the language, not at a topic
+        const EN_HINTS = ['the', 'is', 'are', 'you', 'your', 'my', 'can', 'what', 'how', 'do', 'does', 'where', 'who'];
+        const ID_HINTS = ['yang', 'di', 'ke', 'dari', 'ini', 'itu', 'apa', 'bagaimana', 'gimana', 'aku', 'saya', 'kamu', 'bisa', 'ada'];
+
+        // Whole-word match, so "mana" doesn't fire on "bagaimana" and "hi" doesn't fire on "this".
+        // An optional "-s" / "-nya" suffix still counts ("projects", "kontaknya").
+        function hasWord(text, word) {
+            const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return new RegExp(`(^|[^a-z0-9])${escaped}(s|nya)?(?=$|[^a-z0-9])`).test(text);
+        }
+
         function getSmartResponse(input) {
             const lowerInput = input.toLowerCase();
 
-            // 1. Collect all ID and EN keywords to detect language
+            // 1. Score every intent; the one with the most keyword hits wins
+            //    (on a tie, the later, more specific intent wins)
             let idScore = 0;
             let enScore = 0;
             let detectedIntent = null;
+            let bestScore = 0;
 
-            // Iterate through knowledge base to find matches
             for (const [key, data] of Object.entries(botKnowledge)) {
-                // Check ID keywords
-                data.id_keywords.forEach(word => {
-                    if (lowerInput.includes(word)) {
-                        idScore++;
-                        detectedIntent = key; // Save intent if found
-                    }
-                });
-                // Check EN keywords
-                data.en_keywords.forEach(word => {
-                    if (lowerInput.includes(word)) {
-                        enScore++;
-                        detectedIntent = key;
-                    }
-                });
+                const idHits = data.id_keywords.filter(word => hasWord(lowerInput, word));
+                const enHits = data.en_keywords.filter(word => hasWord(lowerInput, word));
+
+                // Keywords shared by both languages (e.g. "email") say nothing about the language
+                idScore += idHits.filter(word => !data.en_keywords.includes(word)).length;
+                enScore += enHits.filter(word => !data.id_keywords.includes(word)).length;
+
+                const score = new Set([...idHits, ...enHits]).size;
+                if (score > 0 && score >= bestScore) {
+                    bestScore = score;
+                    detectedIntent = key;
+                }
             }
+
+            idScore += ID_HINTS.filter(word => hasWord(lowerInput, word)).length;
+            enScore += EN_HINTS.filter(word => hasWord(lowerInput, word)).length;
 
             // 2. Language Decision Logic
-            let detectedLang = 'unknown';
-            
-            if (idScore === 0 && enScore === 0) {
-                // Check for generic English common words if no specific keywords match
-                if (/\b(the|is|are|you|my|can)\b/.test(lowerInput)) {
-                    detectedLang = 'en';
-                } else if (/\b(yang|di|ke|dari|ini|itu)\b/.test(lowerInput)) {
-                    detectedLang = 'id';
-                } else {
-                    detectedLang = 'unknown';
-                }
-            } else if (idScore >= enScore) {
-                detectedLang = 'id';
-            } else {
-                detectedLang = 'en';
-            }
-
-            // 3. Return Response
-            if (detectedLang === 'unknown') {
+            if (idScore === 0 && enScore === 0 && !detectedIntent) {
                 return "I'm sorry, I don't understand your language. Please use English or Bahasa Indonesia.";
             }
+            const detectedLang = enScore > idScore ? 'en' : 'id';
 
+            // 3. Return Response
             if (detectedLang === 'id') {
                 if (detectedIntent) return botKnowledge[detectedIntent].response_id;
                 return "Maaf, saya kurang mengerti konteksnya. Bisa tanya tentang 'skill', 'proyek', atau 'kontak'?";
