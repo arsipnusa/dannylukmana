@@ -3,12 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danny | Frontend Dev.</title>
-    <meta name="description" content="Portfolio of Danny Lukmana, a Frontend Developer specialized in React, Next.js, and Interactive UI/UX.">
-    <meta property="og:title" content="Danny Lukmana - Frontend Developer Portfolio">
-    <meta property="og:description" content="Check out my latest projects, virtual tours, and interactive web experiences.">
-    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1920/1920990.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1920/1920990.png">
+    <!-- SEO: one canonical address, a clear title and description, and rich previews when shared -->
+    <title>Danny Lukmana | Frontend &amp; 360° Virtual Tour Developer</title>
+    <meta name="description" content="Jakarta-based frontend developer building 360° virtual tours for 9 Indonesian regions, landing pages for small businesses, and 3D/AR web projects.">
+    <meta name="author" content="Danny Lukmana">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://arsipnusa.github.io/dannylukmana/">
+    <meta name="theme-color" content="#f8f9fa" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#050505" media="(prefers-color-scheme: dark)">
+
+    <meta property="og:type" content="profile">
+    <meta property="og:site_name" content="Danny Lukmana">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:url" content="https://arsipnusa.github.io/dannylukmana/">
+    <meta property="og:title" content="Danny Lukmana | Frontend &amp; 360° Virtual Tour Developer">
+    <meta property="og:description" content="360° virtual tours for 9 Indonesian regions, landing pages for small businesses, and 3D/AR web projects. Based in Jakarta.">
+    <meta property="og:image" content="https://arsipnusa.github.io/dannylukmana/images/og-image.png">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="420">
+    <meta property="og:image:alt" content="Danny Lukmana, frontend developer: screenshots of his virtual tour, 3D map and AR projects">
+    <meta property="profile:first_name" content="Danny">
+    <meta property="profile:last_name" content="Lukmana">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Danny Lukmana | Frontend &amp; 360° Virtual Tour Developer">
+    <meta name="twitter:description" content="360° virtual tours for 9 Indonesian regions, landing pages for small businesses, and 3D/AR web projects.">
+    <meta name="twitter:image" content="https://arsipnusa.github.io/dannylukmana/images/og-image.png">
+    <meta name="twitter:image:alt" content="Danny Lukmana, frontend developer: screenshots of his virtual tour, 3D map and AR projects">
+
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+    <!-- Structured data: tells search engines this page is Danny's profile, and which accounts are his -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": "https://arsipnusa.github.io/dannylukmana/#website",
+                "url": "https://arsipnusa.github.io/dannylukmana/",
+                "name": "Danny Lukmana",
+                "inLanguage": "en"
+            },
+            {
+                "@type": "ProfilePage",
+                "@id": "https://arsipnusa.github.io/dannylukmana/#profile",
+                "url": "https://arsipnusa.github.io/dannylukmana/",
+                "name": "Danny Lukmana | Frontend & 360° Virtual Tour Developer",
+                "isPartOf": { "@id": "https://arsipnusa.github.io/dannylukmana/#website" },
+                "mainEntity": { "@id": "https://arsipnusa.github.io/dannylukmana/#person" },
+                "dateModified": "2026-11-08"
+            },
+            {
+                "@type": "Person",
+                "@id": "https://arsipnusa.github.io/dannylukmana/#person",
+                "name": "Danny Lukmana",
+                "alternateName": "Muhamad Danny Lukmana",
+                "url": "https://arsipnusa.github.io/dannylukmana/",
+                "image": "https://arsipnusa.github.io/dannylukmana/images/og-image.png",
+                "jobTitle": "Frontend Developer",
+                "description": "Frontend developer building 360° virtual tours for regional governments, landing pages for small businesses, and 3D/AR web projects.",
+                "worksFor": { "@type": "Organization", "name": "Teknologi Govirtual Indonesia" },
+                "alumniOf": { "@type": "CollegeOrUniversity", "name": "Telkom University" },
+                "address": { "@type": "PostalAddress", "addressLocality": "Jakarta", "addressCountry": "ID" },
+                "email": "mailto:dannylukmana.business@gmail.com",
+                "knowsAbout": ["Frontend development", "360° virtual tours", "Pano2VR", "3D Vista", "JavaScript", "TypeScript", "React", "Next.js", "Three.js", "WebAR", "UI/UX implementation"],
+                "sameAs": [
+                    "https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295",
+                    "https://github.com/dannylukmana",
+                    "https://github.com/arsipnusa"
+                ]
+            }
+        ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
@@ -144,6 +214,11 @@
         
         .card { padding: 2.5rem; border-radius: 20px; border: 1px solid var(--glass-border); min-height: 320px; transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s, border-color 0.3s; transform-style: preserve-3d; will-change: transform; display: flex; flex-direction: column; justify-content: space-between; background: var(--glass-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .card:hover { border-color: var(--text-muted); }
+        /* Project screenshot, full-bleed at the top of the card (cancels the card padding) */
+        .card-img { display: block; width: calc(100% + 5rem); max-width: none; height: auto; aspect-ratio: 16 / 10; margin: -2.5rem -2.5rem 1.5rem; object-fit: cover; object-position: top; border-radius: 19px 19px 0 0; background: var(--line-color); }
+        .card-img-center { object-position: center; }
+        .card-img-private { display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .card-img-private .material-icons-round { font-size: 3rem; }
         /* The strongest work gets its own treatment instead of an identical card */
         .card-featured { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); }
         .card-featured p { color: inherit; opacity: 0.85; }
@@ -193,6 +268,14 @@
         .close-btn:hover { background: var(--line-color); }
         iframe { width: 100%; height: 80vh; border: none; border-radius: 10px; background: #fff; }
         .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        /* A tour playing inside the dialog: wider dialog, list hidden */
+        .modal-content.is-viewing { max-width: 1100px; }
+        .tour-grid[hidden] { display: none; }
+        .tour-viewer-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+        .tour-nav { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 20px; border: 1px solid var(--glass-border); background: transparent; color: var(--text-main); font: inherit; font-size: 0.9rem; font-weight: 600; text-decoration: none; cursor: pointer; }
+        .tour-nav:hover { border-color: var(--text-main); }
+        .tour-nav .material-icons-round { font-size: 1.1rem; }
+        #tourFrame { height: min(70vh, 640px); background: #000; }
         .tour-card { background: rgba(255,255,255,0.5); border: 1px solid var(--glass-border); border-radius: 15px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-decoration: none; color: inherit; }
         [data-theme="dark"] .tour-card { background: rgba(255,255,255,0.05); }
         .tour-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
@@ -228,6 +311,7 @@
             .container { padding: 3.5rem 20px; }
             .section-title { font-size: 1.6rem; margin-bottom: 2rem; }
             .card { min-height: 0; padding: 1.75rem; gap: 1rem; }
+            .card-img { width: calc(100% + 3.5rem); margin: -1.75rem -1.75rem 0.25rem; }
 
             /* FIX: Ensure grid is single column on mobile and prevent overflow */
             .grid { grid-template-columns: 1fr; }
@@ -278,6 +362,9 @@
         .message.bot { background: rgba(125,125,125,0.1); align-self: flex-start; border-bottom-left-radius: 2px; }
         .message.user { background: var(--text-main); color: var(--bg-color); align-self: flex-end; border-bottom-right-radius: 2px; }
         .chat-footer { padding: 10px; border-top: 1px solid var(--glass-border); display: flex; gap: 5px; }
+        .chat-suggestions { display: flex; gap: 6px; padding: 8px 10px; overflow-x: auto; scrollbar-width: none; border-top: 1px solid var(--glass-border); }
+        .chat-chip { flex: none; padding: 6px 12px; border-radius: 16px; border: 1px solid var(--glass-border); background: transparent; color: var(--text-main); font: inherit; font-size: 0.8125rem; cursor: pointer; white-space: nowrap; }
+        .chat-chip:hover { border-color: var(--text-main); }
         .chat-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--glass-border); background: transparent; font-family: inherit; font-size: 0.9rem; color: var(--text-main); }
         .chat-input:focus { border-color: var(--accent); }
         .chat-send { background: var(--text-main); color: var(--bg-color); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -570,6 +657,7 @@ footer {
         <div class="grid">
             
             <div class="card glass tilt-card card-featured">
+                <img src="images/projects/virtual-tour-semarang.jpg" alt="Welcome screen of the Semarang City virtual tour" class="card-img card-img-center" loading="lazy" width="800" height="685">
                 <h3>Virtual Tour 360°</h3>
                 <p>Interactive 360° tours for 9 regions across Indonesia, from Jakarta to Jatiluwih, supporting tourism, transparency, and public services.</p>
                 <div><span class="tag">Pano2VR</span><span class="tag">JavaScript</span><span class="tag">3D Vista</span></div>
@@ -579,6 +667,7 @@ footer {
             </div>
 
             <div class="card glass tilt-card">
+                <img src="images/projects/toko-arsip-nusa.jpg" alt="Toko Arsip Nusa landing page" class="card-img" loading="lazy" width="800" height="685">
                 <h3>Toko Arsip Nusa</h3>
                 <p>Affordable and efficient landing page creation service from my brand, Toko Arsip Nusa, with no hosting cost to accelerate MSMEs’ digital growth.</p>
                 <div><span class="tag">HTML/CSS</span><span class="tag">Static Site</span><span class="tag">Serverless</span></div>
@@ -588,6 +677,7 @@ footer {
             </div>
 
             <div class="card glass tilt-card">
+                <img src="images/projects/reinkarnails.jpg" alt="Reinkarnails landing page" class="card-img" loading="lazy" width="800" height="685">
                 <h3>Reinkarnails</h3>
                 <p>Custom Reinkarnails nail art delivering bold designs, premium quality, and expressive details to elevate your style with unique handcrafted perfection.</p>
                 <div><span class="tag">HTML/CSS</span><span class="tag">Static Site</span><span class="tag">Serverless</span></div>
@@ -597,6 +687,7 @@ footer {
             </div>
 
             <div class="card glass tilt-card">
+                <img src="images/projects/sate-kambing-pak-slamet.jpg" alt="Sate Kambing Pak Slamet landing page" class="card-img" loading="lazy" width="800" height="685">
                 <h3>Sate Kambing P. Slamet</h3>
                 <p>I designed a landing page for Sate Kambing Pak Slamet to promote a legendary culinary brand with clear visuals and accessible information.</p>
                 <div><span class="tag">HTML/CSS</span><span class="tag">Static Site</span><span class="tag">Serverless</span></div>
@@ -606,6 +697,8 @@ footer {
             </div>
 
             <div class="card glass tilt-card">
+                <!-- Private client dashboard: no public screenshot, so an icon stands in for it -->
+                <div class="card-img card-img-private" aria-hidden="true"><span class="material-icons-round">dashboard</span></div>
                 <h3>Teavaro Funnel Manager</h3>
                 <p>Complex and responsive marketing data management dashboard.</p>
                 <div><span class="tag">Vaadin</span><span class="tag">Java</span></div>
@@ -615,6 +708,7 @@ footer {
             </div>
 
             <div class="card glass tilt-card">
+                <img src="images/projects/alodokter.jpg" alt="Alodokter medical platform homepage" class="card-img" loading="lazy" width="800" height="685">
                 <h3>Alodokter Medical Platform</h3>
                 <p>Integrated and user-friendly healthcare information platform.</p>
                 <div><span class="tag">Ruby on Rails</span><span class="tag">Fullstack</span></div>
@@ -876,13 +970,13 @@ footer {
                 <button class="contact-btn" onclick="copyEmail()">
                     <span class="material-icons-round">content_copy</span><span>Copy Email</span>
                 </button>
-                <a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank" class="contact-btn">
+                <a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank" rel="me noopener" class="contact-btn">
                     <svg class="social-icon" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg><span>LinkedIn</span>
                 </a>
-                <a href="https://github.com/dannylukmana" target="_blank" class="contact-btn">
+                <a href="https://github.com/dannylukmana" target="_blank" rel="me noopener" class="contact-btn">
                     <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg><span>DannyLukmana</span>
                 </a>
-                <a href="https://github.com/arsipnusa" target="_blank" class="contact-btn">
+                <a href="https://github.com/arsipnusa" target="_blank" rel="me noopener" class="contact-btn">
                     <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg><span>ArsipNusa</span>
                 </a>
                 </div>
@@ -918,8 +1012,8 @@ footer {
         <div>
             <h3 class="footer-heading">Connect</h3>
             <ul class="footer-links">
-                <li><a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank">LinkedIn <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
-                <li><a href="https://github.com/dannylukmana" target="_blank">GitHub <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
+                <li><a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank" rel="me noopener">LinkedIn <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
+                <li><a href="https://github.com/dannylukmana" target="_blank" rel="me noopener">GitHub <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
                 <li><a href="mailto:dannylukmana.business@gmail.com">Email Me <span class="material-icons-round" style="font-size: 16px;">mail</span></a></li>
                 <li><a href="https://drive.google.com/drive/folders/1erFo3FMDfxmjo3X-fxbA6-JyP8elH9GM?usp=sharing" target="_blank" rel="noopener">Resume <span class="material-icons-round" style="font-size: 16px;">download</span></a></li>
             </ul>
@@ -943,11 +1037,18 @@ footer {
     <div class="chat-window" id="chatWindow" role="region" aria-labelledby="chatTitle" inert>
         <div class="chat-header"><h4 id="chatTitle"><span class="material-icons-round" style="font-size: 1.2rem;" aria-hidden="true">smart_toy</span> Danny's AI</h4><button class="icon-btn chat-close" onclick="toggleChat()" aria-label="Close chat"><span class="material-icons-round" aria-hidden="true">close</span></button></div>
         <div class="chat-body" id="chatBody" role="log" aria-live="polite"><div class="message bot">Hi! I'm Danny's virtual assistant. Ask me about my skills, experience, or contacts!</div></div>
+        <!-- One-tap questions, so visitors don't have to guess what the bot understands -->
+        <div class="chat-suggestions" role="group" aria-label="Suggested questions">
+            <button type="button" class="chat-chip">Show me the virtual tours</button>
+            <button type="button" class="chat-chip">What are your skills?</button>
+            <button type="button" class="chat-chip">How long does a website take?</button>
+            <button type="button" class="chat-chip">How can I contact you?</button>
+        </div>
         <div class="chat-footer"><label for="chatInput" class="sr-only">Message Danny's assistant</label><input type="text" id="chatInput" class="chat-input" placeholder="Ask me something..." onkeydown="handleEnter(event)"><button class="chat-send" onclick="sendMessage()" aria-label="Send message"><span class="material-icons-round" style="font-size: 1rem;" aria-hidden="true">send</span></button></div>
     </div>
 
     <div id="certModal" class="modal" role="dialog" aria-modal="true" aria-label="Credential preview"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeCert()" aria-label="Close">&times;</button><iframe id="certIframe" src="" allow="autoplay" title="Credential document"></iframe></div></div>
-    <div id="tourModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tourModalTitle"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeTourModal()" aria-label="Close">&times;</button><h2 class="modal-title" id="tourModalTitle">Select Destination</h2><div class="tour-grid"><a class="tour-card" href="https://semarang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/960px-Lawang_Sewu_in_Semarang_City.jpg&w=600&h=300&fit=cover&output=webp" alt="Lawang Sewu, Semarang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Semarang City</h3><p>Discover the historic charm and modern vibes of Central Java's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jakarta.govirtual.id/urban-tourism/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/960px-Jakarta_CBD.jpg&w=600&h=300&fit=cover&output=webp" alt="Jakarta skyline" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jakarta City</h3><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtualtour.lampungselatankab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/960px-Bakauheni_Port.jpg&w=600&h=300&fit=cover&output=webp" alt="Bakauheni Port, Lampung Selatan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lampung Selatan</h3><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtual-tour.tangerangkab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Kantor_bupati_tangerang_-_panoramio.jpg/960px-Kantor_bupati_tangerang_-_panoramio.jpg&w=600&h=300&fit=cover&a=top&output=webp" alt="Tangerang Regent's Office, Tigaraksa" class="tour-img" loading="lazy"><div class="tour-info"><h3>Tangerang Regency</h3><p>Navigate through the modern developments and public facilities of Banten.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://lahat.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/960px-Sunrise_Bukit_Besak.jpg&w=600&h=300&fit=cover&a=bottom&output=webp" alt="Sunrise at Bukit Besak, Lahat" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lahat Regency</h3><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://bogor.govirtual.id/" target="_blank" rel="noopener"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img" loading="lazy"><div class="tour-info"><h3>Bogor Regency</h3><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://medan.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Maimun_Palace_Medan_Indonesia.jpg/960px-Maimun_Palace_Medan_Indonesia.jpg&w=600&h=300&fit=cover&output=webp" alt="Maimun Palace, Medan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Medan City</h3><p>Explore the royal heritage and vibrant urban life of North Sumatra's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://deliserdang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Kualanamu_Airport_Terminal_Building.jpg/960px-Kualanamu_Airport_Terminal_Building.jpg&w=600&h=300&fit=cover&output=webp" alt="Kualanamu International Airport, Deli Serdang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Deli Serdang Regency</h3><p>Tour the Lubuk Pakam city center and public facilities of North Sumatra's gateway regency.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jatiluwih.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Jatiluwih_UNESCO_rice_terraces.jpg/960px-Jatiluwih_UNESCO_rice_terraces.jpg&w=600&h=300&fit=cover&output=webp" alt="Jatiluwih rice terraces, Bali" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jatiluwih Village</h3><p>Wander through Bali's UNESCO-listed rice terraces in immersive 360° views.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a></div></div></div>
+    <div id="tourModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tourModalTitle"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeTourModal()" aria-label="Close">&times;</button><h2 class="modal-title" id="tourModalTitle">Select Destination</h2><div class="tour-grid"><a class="tour-card" href="https://semarang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/960px-Lawang_Sewu_in_Semarang_City.jpg&w=600&h=300&fit=cover&output=webp" alt="Lawang Sewu, Semarang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Semarang City</h3><p>Discover the historic charm and modern vibes of Central Java's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://jakarta.govirtual.id/urban-tourism/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/960px-Jakarta_CBD.jpg&w=600&h=300&fit=cover&output=webp" alt="Jakarta skyline" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jakarta City</h3><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://virtualtour.lampungselatankab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/960px-Bakauheni_Port.jpg&w=600&h=300&fit=cover&output=webp" alt="Bakauheni Port, Lampung Selatan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lampung Selatan</h3><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://virtual-tour.tangerangkab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Kantor_bupati_tangerang_-_panoramio.jpg/960px-Kantor_bupati_tangerang_-_panoramio.jpg&w=600&h=300&fit=cover&a=top&output=webp" alt="Tangerang Regent's Office, Tigaraksa" class="tour-img" loading="lazy"><div class="tour-info"><h3>Tangerang Regency</h3><p>Navigate through the modern developments and public facilities of Banten.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://lahat.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/960px-Sunrise_Bukit_Besak.jpg&w=600&h=300&fit=cover&a=bottom&output=webp" alt="Sunrise at Bukit Besak, Lahat" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lahat Regency</h3><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://bogor.govirtual.id/" target="_blank" rel="noopener"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img" loading="lazy"><div class="tour-info"><h3>Bogor Regency</h3><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://medan.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Maimun_Palace_Medan_Indonesia.jpg/960px-Maimun_Palace_Medan_Indonesia.jpg&w=600&h=300&fit=cover&output=webp" alt="Maimun Palace, Medan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Medan City</h3><p>Explore the royal heritage and vibrant urban life of North Sumatra's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://deliserdang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Kualanamu_Airport_Terminal_Building.jpg/960px-Kualanamu_Airport_Terminal_Building.jpg&w=600&h=300&fit=cover&output=webp" alt="Kualanamu International Airport, Deli Serdang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Deli Serdang Regency</h3><p>Tour the Lubuk Pakam city center and public facilities of North Sumatra's gateway regency.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a><a class="tour-card" href="https://jatiluwih.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Jatiluwih_UNESCO_rice_terraces.jpg/960px-Jatiluwih_UNESCO_rice_terraces.jpg&w=600&h=300&fit=cover&output=webp" alt="Jatiluwih rice terraces, Bali" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jatiluwih Village</h3><p>Wander through Bali's UNESCO-listed rice terraces in immersive 360° views.</p><span class="tour-btn">Explore Tour <span class="material-icons-round" aria-hidden="true">360</span></span></div></a></div><div class="tour-viewer" id="tourViewer" hidden><div class="tour-viewer-bar"><button type="button" class="tour-nav" id="tourBack"><span class="material-icons-round" aria-hidden="true">arrow_back</span> All destinations</button><a class="tour-nav" id="tourNewTab" href="https://semarang.govirtual.id/" target="_blank" rel="noopener">Open in new tab <span class="material-icons-round" aria-hidden="true">open_in_new</span></a></div><iframe id="tourFrame" title="Virtual tour" allow="fullscreen; accelerometer; gyroscope; xr-spatial-tracking; autoplay" allowfullscreen></iframe></div></div></div>
     <div id="arModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="arModalTitle">
         <div class="modal-content glass ar-modal">
             <button class="icon-btn close-btn" onclick="closeArModal()" aria-label="Close">&times;</button>
@@ -1069,7 +1170,45 @@ footer {
 
         const tourModal = document.getElementById('tourModal');
         function openTourModal() { openModal(tourModal); }
-        function closeTourModal() { closeModal(tourModal); }
+        function closeTourModal() { closeModal(tourModal); showTourList(); }
+
+        // Tours play inside the dialog (their sites allow embedding). The cards stay normal links,
+        // so Ctrl/Cmd-click, middle-click, or a browser without this script still opens a new tab.
+        const tourGrid = tourModal.querySelector('.tour-grid');
+        const tourViewer = document.getElementById('tourViewer');
+        const tourFrame = document.getElementById('tourFrame');
+        const tourTitle = document.getElementById('tourModalTitle');
+        const tourContent = tourModal.querySelector('.modal-content');
+        function showTour(card) {
+            const name = card.querySelector('h3').textContent;
+            tourFrame.src = card.href;
+            tourFrame.title = `Virtual tour of ${name}`;
+            document.getElementById('tourNewTab').href = card.href;
+            tourTitle.textContent = name;
+            tourGrid.hidden = true;
+            tourViewer.hidden = false;
+            tourContent.classList.add('is-viewing');
+            document.getElementById('tourBack').focus();
+        }
+        function showTourList() {
+            tourFrame.src = 'about:blank'; // stops the tour and any audio it was playing
+            tourTitle.textContent = 'Select Destination';
+            tourViewer.hidden = true;
+            tourGrid.hidden = false;
+            tourContent.classList.remove('is-viewing');
+        }
+        tourGrid.addEventListener('click', (event) => {
+            const card = event.target.closest('.tour-card');
+            if (!card || event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return;
+            event.preventDefault();
+            showTour(card);
+        });
+        document.getElementById('tourBack').addEventListener('click', () => {
+            const href = tourFrame.src;
+            showTourList();
+            const card = [...tourGrid.querySelectorAll('.tour-card')].find(c => c.href === href);
+            (card || tourGrid.querySelector('.tour-card')).focus();
+        });
 
         // --- AR BURJ KHALIFA (the live experience runs on the Govirtual server; its QR points there) ---
         const AR_URL = 'https://webview-govirtual.id/govirtual-ar-burj-khalifa/';
@@ -1118,6 +1257,7 @@ footer {
             const activeModal = document.querySelector('.modal.active');
             if (event.key === 'Escape') {
                 if (activeModal === certModal) closeCert();
+                else if (activeModal === tourModal) closeTourModal();
                 else if (activeModal) closeModal(activeModal);
                 else if (chatWindow.classList.contains('open')) toggleChat();
                 else if (navLinks.classList.contains('active')) { setMenu(false); hamburger.focus(); }
@@ -1338,8 +1478,20 @@ footer {
                 en_keywords: ['virtual tour', '360 tour', 'virtual tourism', 'panorama', 'tour', 'semarang', 'lampung', 'tangerang', 'lahat', 'bogor', 'medan', 'deli serdang', 'jatiluwih', 'bali'],
                 response_id: "Saya membangun virtual tour 360° untuk 9 daerah: Semarang, Jakarta, Lampung Selatan, Tangerang, Lahat, Bogor, Medan, Deli Serdang, dan Desa Jatiluwih (Bali). Coba lewat tombol 'Explore Virtual Tour' di bagian Selected Works.",
                 response_en: "I've built 360° virtual tours for 9 regions: Semarang, Jakarta, Lampung Selatan, Tangerang, Lahat, Bogor, Medan, Deli Serdang, and Jatiluwih Village (Bali). Try them via the 'Explore Virtual Tour' button in Selected Works."
+            },
+            // Same answer as the FAQ; last in the list so it wins ties with "website"
+            timeline: {
+                id_keywords: ['berapa lama', 'lama', 'durasi', 'deadline', 'waktu pengerjaan', 'hari', 'minggu', 'selesai'],
+                en_keywords: ['how long', 'timeline', 'deadline', 'turnaround', 'take', 'days', 'weeks'],
+                response_id: "Tergantung kompleksitasnya. Landing page standar sekitar 3-5 hari, sedangkan dashboard atau virtual tour sekitar 2-4 minggu. Timeline-nya bisa kita diskusikan sesuai kebutuhanmu.",
+                response_en: "It depends on the complexity. A standard landing page takes about 3-5 days, while dashboards or virtual tours take about 2-4 weeks. We can agree on a timeline that fits your needs."
             }
         };
+
+        document.querySelectorAll('.chat-chip').forEach(chip => chip.addEventListener('click', () => {
+            chatInput.value = chip.textContent;
+            sendMessage();
+        }));
 
         function sendMessage() {
             const text = chatInput.value.trim();

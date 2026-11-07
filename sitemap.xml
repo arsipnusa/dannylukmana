@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Submit this in Google Search Console and Bing Webmaster Tools:
+     https://arsipnusa.github.io/dannylukmana/sitemap.xml
+     (robots.txt only works at the domain root, which this project site doesn't control) -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://arsipnusa.github.io/dannylukmana/</loc>
+    <lastmod>2026-11-08</lastmod>
+    <image:image><image:loc>https://arsipnusa.github.io/dannylukmana/images/og-image.png</image:loc></image:image>
+    <image:image><image:loc>https://arsipnusa.github.io/dannylukmana/images/projects/virtual-tour-semarang.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://arsipnusa.github.io/dannylukmana/project/maps-badung/</loc>
+    <lastmod>2026-11-08</lastmod>
+  </url>
+  <url>
+    <loc>https://arsipnusa.github.io/dannylukmana/project/maps-kotabaru/</loc>
+    <lastmod>2026-11-08</lastmod>
+  </url>
+</urlset>
