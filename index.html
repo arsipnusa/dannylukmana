@@ -13,7 +13,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    
+    <script>
+        // Apply the theme before the first paint (no light flash for dark-mode visitors):
+        // the saved choice if there is one, otherwise the device setting.
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem('theme'); } catch (e) {}
+            if (theme !== 'dark' && theme !== 'light') {
+                theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 
     <style>
         /* --- 1. CONFIGURATION --- */
@@ -27,9 +38,11 @@
             --menu-bg: rgba(255, 255, 255, 0.95); --outline-color: #2d3436; 
             --line-color: rgba(0, 0, 0, 0.1); --accent-color: #2d3436;
             --scroll-track: rgba(0, 0, 0, 0.05); --scroll-thumb: rgba(0, 0, 0, 0.2); --scroll-thumb-hover: rgba(0, 0, 0, 0.4);
+            --accent: #0e7490; --success: #17663a; --success-bg: rgba(39, 174, 96, 0.12); --surface: #ffffff;
         }
 
         [data-theme="dark"] {
+            --accent: #22d3ee; --success: #4ade80; --success-bg: rgba(74, 222, 128, 0.12); --surface: #111111;
             --bg-color: #050505; --pattern-color: transparent; 
             --text-main: #ffffff; --text-muted: #a0a0a0;
             --glass-bg: rgba(255, 255, 255, 0.03); --glass-border: rgba(255, 255, 255, 0.08);
@@ -51,12 +64,12 @@
         body { font-family: 'Outfit', sans-serif; background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; line-height: 1.6; transition: background-color 0.4s ease, color 0.4s ease; background-image: radial-gradient(var(--pattern-color) 1px, transparent 1px); background-size: 24px 24px; }
         section { scroll-margin-top: 100px; position: relative; z-index: 1; }
 
-        /* --- 3. BACKGROUND ORBS --- */
-        .ambient-light { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: hidden; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; background: var(--orb-color); transition: background 0.4s ease; animation: float 10s infinite ease-in-out alternate; }
-        .orb-1 { width: 300px; height: 300px; top: 10%; left: 20%; }
-        .orb-2 { width: 400px; height: 400px; bottom: 10%; right: 10%; animation-delay: -5s; }
-        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 50px); } }
+        /* --- 3. ACCESSIBILITY HELPERS --- */
+        /* Visible keyboard focus everywhere (mouse clicks don't trigger it) */
+        :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        /* Icon-only controls are real <button>s; this strips the default button look */
+        .icon-btn { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
         /* --- 4. NAVIGATION --- */
         nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1200px; padding: 0.8rem 2rem; border-radius: 50px; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: var(--glass-shadow); }
@@ -65,10 +78,11 @@
         .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; transition: color 0.3s; font-weight: 500; }
         .nav-links a:hover { color: var(--text-main); }
         .nav-actions { display: flex; align-items: center; gap: 15px; z-index: 1002; }
-        .theme-toggle { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+        .theme-toggle { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
         .theme-toggle:hover { background: var(--glass-border); }
         .theme-toggle.is-playing { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); }
-        .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+        /* 44x44 tap area around the three bars */
+        .hamburger { display: none; width: 44px; height: 44px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border-radius: 50%; }
         .bar { width: 25px; height: 2px; background-color: var(--text-main); transition: 0.3s; }
 
         /* --- 5. HERO & AVATAR --- */
@@ -76,16 +90,14 @@
         .avatar-container { position: relative; width: 180px; height: 180px; margin-bottom: 2rem; }
         .avatar-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; background: radial-gradient(circle, var(--orb-color) 0%, transparent 70%); border-radius: 50%; z-index: 1; }
         .avatar-img { width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2; animation: floatAvatar 6s ease-in-out infinite; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
-        .greeting-badge { position: absolute; bottom: 10px; right: -40px; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; z-index: 3; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards; opacity: 0; transform: scale(0.5); background: rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.05); white-space: nowrap; color: #2d3436; }
+        .greeting-badge { position: absolute; bottom: 10px; right: -40px; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; z-index: 3; animation: popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) 1s both; background: rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.05); white-space: nowrap; color: #2d3436; }
         @keyframes floatAvatar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
         .hero-name { font-size: 1.5rem; font-weight: 600; color: var(--text-main); letter-spacing: 0.5px; margin-bottom: 0.25rem; }
         .flip-container { display: block; perspective: 1000px; height: auto; margin-bottom: 1rem; }
-        .flip-text { display: block; font-size: 6rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; letter-spacing: -2px; color: var(--text-main); transform-origin: center bottom; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease; opacity: 1; transform: rotateX(0deg); }
+        .flip-text { display: block; font-size: 6rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; letter-spacing: -2px; color: var(--text-main); transform-origin: center bottom; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease; opacity: 1; transform: rotateX(0deg); }
         .flip-text.out { transform: rotateX(-90deg); opacity: 0; }
-        .subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin-bottom: 2.5rem; margin-top: 1rem; min-height: 1.5em;}
-        .type-cursor { display: inline-block; width: 2px; height: 1.2em; background-color: var(--text-main); margin-left: 2px; animation: blink 1s infinite; vertical-align: bottom; }
-        @keyframes blink { 50% { opacity: 0; } }
+        .subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin-bottom: 2.5rem; margin-top: 1rem; }
         .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
         .btn { padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.3s; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--btn-bg); color: var(--btn-text); border: 1px solid var(--btn-bg); box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
@@ -93,38 +105,48 @@
         .btn-glass { background: rgba(125,125,125,0.05); color: var(--text-main); border: 1px solid var(--glass-border); }
         .btn-glass:hover { background: rgba(125,125,125,0.1); transform: translateY(-2px); }
 
-        /* --- ADDED: TECH STACK MARQUEE --- */
-        .tech-marquee-section { padding: 2rem 0; width: 100%; overflow: hidden; margin-top: -2rem; margin-bottom: 2rem; opacity: 0.8; }
-        .marquee-wrapper { display: flex; width: fit-content; animation: scrollMarquee 25s linear infinite; }
-        .marquee-item { font-size: 1.5rem; font-weight: 800; color: var(--outline-color); margin: 0 2rem; white-space: nowrap; display: flex; align-items: center; gap: 10px; opacity: 0.5; transition: 0.3s; cursor: default; }
-        .marquee-item:hover { opacity: 1; color: var(--text-main); transform: scale(1.1); }
-        @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        /* --- TECH STACK (static list; people read it at their own pace) --- */
+        .tech-stack { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem 1.75rem; max-width: 900px; margin: -1rem auto 2rem; padding: 0 20px; list-style: none; }
+        .tech-stack li { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 600; color: var(--text-muted); }
+        .tech-stack .material-icons-round { font-size: 1.2rem; }
 
         /* --- 6. COMMON UTILS & UPDATED GRID --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 5rem 20px; }
-        .section-title { font-size: 2rem; margin-bottom: 3rem; border-left: 4px solid var(--text-main); padding-left: 1rem; opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
-        .section-title.active { opacity: 1; transform: translateY(0); }
+        .section-title { font-size: 2rem; margin-bottom: 3rem; border-left: 4px solid var(--text-main); padding-left: 1rem; transition: opacity 0.8s ease, transform 0.8s ease; }
+        /* Scroll-reveal only hides content once the script has set it up (html.reveal-ready),
+           so a script failure can never leave the page blank */
+        .reveal-ready .section-title:not(.active) { opacity: 0; transform: translateY(30px); }
+        .reveal-ready .card:not(.active) { opacity: 0; transform: translateY(50px); }
+        .reveal-ready .timeline-item:not(.active) { opacity: 0; }
+        .reveal-ready .timeline-item:nth-child(odd):not(.active) { transform: translateX(-50px); }
+        .reveal-ready .timeline-item:nth-child(even):not(.active) { transform: translateX(50px); }
         
         /* FIX: Adjusted minmax for better responsiveness on small screens */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; perspective: 1000px; }
         
-        .card { padding: 2.5rem; border-radius: 20px; border: 1px solid var(--glass-border); min-height: 320px; opacity: 0; transform: translateY(50px); transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s, border-color 0.3s; transform-style: preserve-3d; will-change: transform; display: flex; flex-direction: column; justify-content: space-between; background: var(--glass-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .card:hover { border-color: var(--text-muted); } .card.active { opacity: 1; transform: translateY(0); }
-        .tag { font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; background: rgba(0,0,0,0.05); border: 1px solid var(--glass-border); color: var(--text-main); display: inline-block; margin: 5px 5px 0 0; }
+        .card { padding: 2.5rem; border-radius: 20px; border: 1px solid var(--glass-border); min-height: 320px; transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s, border-color 0.3s; transform-style: preserve-3d; will-change: transform; display: flex; flex-direction: column; justify-content: space-between; background: var(--glass-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .card:hover { border-color: var(--text-muted); }
+        /* The strongest work gets its own treatment instead of an identical card */
+        .card-featured { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); }
+        .card-featured p { color: inherit; opacity: 0.85; }
+        .card-featured .tag { background: transparent; border-color: currentColor; color: inherit; }
+        .card-featured .btn-view-cert { border-color: var(--bg-color); color: var(--bg-color); }
+        .card-featured .btn-view-cert:hover { background: var(--bg-color); color: var(--text-main); }
+        .card-featured:hover { border-color: var(--text-main); }
+        .tag { font-size: 0.8125rem; padding: 4px 12px; border-radius: 12px; background: rgba(0,0,0,0.05); border: 1px solid var(--glass-border); color: var(--text-main); display: inline-block; margin: 5px 5px 0 0; }
         [data-theme="dark"] .tag { background: rgba(255,255,255,0.1); }
 
         /* --- 7. TIMELINE --- */
         .timeline { position: relative; max-width: 1000px; margin: 0 auto; }
         .timeline::before { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: var(--line-color); transform: translateX(-50%); }
-        .timeline-item { position: relative; margin-bottom: 3rem; width: 50%; opacity: 0; transition: all 0.8s ease; }
-        .timeline-item:nth-child(odd) { left: 0; padding-right: 3rem; text-align: right; transform: translateX(-50px); }
-        .timeline-item:nth-child(even) { left: 50%; padding-left: 3rem; text-align: left; transform: translateX(50px); }
-        .timeline-item.active { opacity: 1; transform: translateX(0); }
+        .timeline-item { position: relative; margin-bottom: 3rem; width: 50%; transition: opacity 0.8s ease, transform 0.8s ease; }
+        .timeline-item:nth-child(odd) { left: 0; padding-right: 3rem; text-align: right; }
+        .timeline-item:nth-child(even) { left: 50%; padding-left: 3rem; text-align: left; }
         .timeline-dot { position: absolute; top: 1.5rem; width: 16px; height: 16px; background: var(--accent-color); border-radius: 50%; border: 3px solid var(--bg-color); box-shadow: 0 0 10px var(--orb-color); z-index: 2; }
         .timeline-item:nth-child(odd) .timeline-dot { right: -8px; } .timeline-item:nth-child(even) .timeline-dot { left: -8px; }
-        .timeline-item:first-child .timeline-dot { background: #0070f3; box-shadow: 0 0 20px #0070f3; animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
-        .timeline-content { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 16px; display: inline-block; width: 100%; transition: transform 0.3s ease; box-shadow: var(--glass-shadow); }
+        /* Current job: highlighted with color, not a pulsing animation */
+        .timeline-item:first-child .timeline-dot { background: var(--accent); box-shadow: none; }
+        .timeline-content { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 16px; display: inline-block; width: 100%; transition: transform 0.3s ease; box-shadow: var(--glass-shadow); }
         .timeline-content:hover { transform: scale(1.02); border-color: var(--text-main); }
 
         /* --- 8. BUTTONS & CERT --- */
@@ -148,19 +170,18 @@
         /* --- 10. MODALS --- */
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); backdrop-filter: blur(5px); justify-content: center; align-items: center; overflow-y: auto; }
         .modal.active { display: flex; animation: fadeIn 0.3s; }
-        .modal-content { background: #fff; border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; width: 90%; max-width: 900px; height: auto; max-height: 90vh; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow-y: auto; }
-        [data-theme="dark"] .modal-content { background: #111; }
-        .close-btn { position: absolute; top: 15px; right: 25px; font-size: 2rem; color: var(--text-main); cursor: pointer; z-index: 1001; }
-        .close-btn:hover { color: #ff4757; }
+        .modal-content { background: var(--surface); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; width: 90%; max-width: 900px; height: auto; max-height: 90vh; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow-y: auto; }
+        .close-btn { position: absolute; top: 10px; right: 14px; width: 44px; height: 44px; border-radius: 50%; font-size: 2rem; line-height: 1; color: var(--text-main); z-index: 1001; display: flex; align-items: center; justify-content: center; }
+        .close-btn:hover { background: var(--line-color); }
         iframe { width: 100%; height: 80vh; border: none; border-radius: 10px; background: #fff; }
         .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
         .tour-card { background: rgba(255,255,255,0.5); border: 1px solid var(--glass-border); border-radius: 15px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-decoration: none; color: inherit; }
         [data-theme="dark"] .tour-card { background: rgba(255,255,255,0.05); }
-        .tour-card:hover { transform: translateY(-5px) scale(1.02); border-color: #00f2fe; box-shadow: 0 10px 20px rgba(0, 242, 254, 0.15); }
+        .tour-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
         .tour-img { width: 100%; height: 150px; object-fit: cover; }
         .tour-info { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
-        .tour-info h4 { margin-bottom: 0.3rem; font-size: 1.1rem; color: var(--text-main); }
-        .tour-info p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1rem; }
+        .tour-info h3 { margin-bottom: 0.3rem; font-size: 1.1rem; color: var(--text-main); }
+        .tour-info p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1rem; }
         /* Button pinned to the card bottom so every card in a row lines up */
         .tour-btn { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; border: 1px solid var(--text-main); color: var(--text-main); font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease; }
         .tour-btn .material-icons-round { font-size: 1rem; }
@@ -195,9 +216,9 @@
             
             .timeline::before { left: 20px; }
             .timeline-item { width: 100%; padding-left: 3rem; padding-right: 0; left: 0; text-align: left; margin-bottom: 2rem; }
-            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { transform: translateY(30px); left: 0; text-align: left; padding-left: 3rem; }
+            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { left: 0; text-align: left; padding-left: 3rem; }
+            .reveal-ready .timeline-item:nth-child(odd):not(.active), .reveal-ready .timeline-item:nth-child(even):not(.active) { transform: translateY(30px); }
             .timeline-item:nth-child(odd) .timeline-dot, .timeline-item:nth-child(even) .timeline-dot { left: 12px; right: auto; }
-            .timeline-item.active { transform: translateY(0); }
             .modal-content { padding: 1.5rem; width: 95%; }
             .tour-grid { grid-template-columns: 1fr; }
             
@@ -209,8 +230,14 @@
             .back-to-top { bottom: 20px; left: 20px; width: 44px; height: 44px; }
             .chat-window { width: 90%; right: 5%; bottom: 85px; height: 350px; }
         }
+        /* Very small phones (320-380px): keep the logo, music, theme and menu buttons inside the bar */
+        @media (max-width: 380px) {
+            nav { width: calc(100% - 24px); padding: 0.6rem 0.9rem; }
+            .logo { font-size: 0.95rem; }
+            .nav-actions { gap: 2px; }
+        }
 
-        .scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: linear-gradient(90deg, var(--text-main), #00f2fe); z-index: 9999; transition: width 0.1s; }
+        .scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: var(--accent); z-index: 9999; transition: width 0.1s; }
         
         .back-to-top { position: fixed; bottom: 30px; left: 30px; width: 45px; height: 45px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 998; }
         .back-to-top.visible { opacity: 1; pointer-events: all; }
@@ -222,8 +249,10 @@
         /* --- 16. CHATBOT STYLES (DESKTOP DEFAULT) --- */
         .chat-launcher { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; background: var(--text-main); color: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1001; transition: transform 0.3s ease; }
         .chat-launcher:hover { transform: scale(1.1); }
-        .chat-window { position: fixed; bottom: 100px; right: 30px; width: 320px; height: 400px; background: var(--menu-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 1001; display: flex; flex-direction: column; overflow: hidden; transform: scale(0); transform-origin: bottom right; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .chat-window.open { transform: scale(1); }
+        .chat-window { position: fixed; bottom: 100px; right: 30px; width: 320px; height: 400px; background: var(--menu-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 1001; display: flex; flex-direction: column; overflow: hidden; transform: scale(0); transform-origin: bottom right; visibility: hidden; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.25s; }
+        /* visibility keeps the closed window's input and buttons out of the Tab order */
+        .chat-window.open { transform: scale(1); visibility: visible; transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .chat-close { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .chat-header { background: var(--text-main); color: var(--bg-color); padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .chat-header h4 { font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -231,21 +260,22 @@
         .message.bot { background: rgba(125,125,125,0.1); align-self: flex-start; border-bottom-left-radius: 2px; }
         .message.user { background: var(--text-main); color: var(--bg-color); align-self: flex-end; border-bottom-right-radius: 2px; }
         .chat-footer { padding: 10px; border-top: 1px solid var(--glass-border); display: flex; gap: 5px; }
-        .chat-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.5); outline: none; font-family: inherit; font-size: 0.85rem; color: var(--text-main); }
+        .chat-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--glass-border); background: transparent; font-family: inherit; font-size: 0.9rem; color: var(--text-main); }
+        .chat-input:focus { border-color: var(--accent); }
         .chat-send { background: var(--text-main); color: var(--bg-color); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
 
         /* --- NEW ABOUT LAYOUT --- */
 .about-content-wrapper { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 3rem; align-items: center; }
-.about-text p { margin-bottom: 1.5rem; color: var(--text-muted); font-size: 1rem; }
+.about-text p { margin-bottom: 1.5rem; color: var(--text-muted); font-size: 1rem; max-width: 65ch; }
 .about-highlight { color: var(--text-main); font-weight: 700; position: relative; z-index: 1; }
-.about-highlight::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 100%; height: 8px; background: rgba(0, 242, 254, 0.2); z-index: -1; transform: rotate(-2deg); }
+.about-highlight::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 100%; height: 8px; background: color-mix(in srgb, var(--accent) 22%, transparent); z-index: -1; transform: rotate(-2deg); }
 
-.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-.stat-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: 16px; text-align: center; transition: transform 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-.stat-card:hover { transform: translateY(-5px); border-color: var(--text-main); }
-.stat-number { display: block; font-size: 2.5rem; font-weight: 900; color: var(--text-main); line-height: 1; margin-bottom: 0.5rem; }
-.stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+/* Key facts as a plain list with context, rather than a grid of big-number tiles */
+.facts { list-style: none; display: flex; flex-direction: column; gap: 1.5rem; border-left: 1px solid var(--line-color); padding-left: 1.75rem; }
+.facts li { display: flex; align-items: baseline; gap: 1rem; }
+.fact-num { font-size: 2.25rem; font-weight: 900; color: var(--text-main); line-height: 1; min-width: 3.2ch; }
+.fact-label { color: var(--text-muted); font-size: 1rem; }
 
 .focus-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
 .focus-pill { padding: 8px 16px; background: rgba(0,0,0,0.03); border-radius: 50px; font-size: 0.85rem; font-weight: 600; color: var(--text-main); border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 8px; }
@@ -253,7 +283,7 @@
 /* Responsive untuk About */
 @media (max-width: 768px) {
     .about-content-wrapper { grid-template-columns: 1fr; gap: 2rem; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .facts { padding-left: 1.25rem; }
 }
 
 /* --- PLAYGROUND (side projects) --- */
@@ -263,31 +293,31 @@
 .play-card:hover, .play-card:focus-visible { transform: translateY(-5px); border-color: var(--text-muted); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
 .play-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #1d2b22; }
 .play-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
-.play-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
 .play-body h3 { font-size: 1.3rem; }
 .play-body p { color: var(--text-muted); font-size: 0.95rem; }
 .play-card:hover .tour-btn, .play-card:focus-visible .tour-btn { background: var(--text-main); color: var(--bg-color); }
 
 /* --- NEW SERVICES SECTION --- */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
-.service-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem 2rem; transition: all 0.4s ease; position: relative; overflow: hidden; z-index: 1; display: flex; flex-direction: column; height: 100%; }
-.service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%); z-index: -1; opacity: 0; transition: opacity 0.4s; }
-.service-card:hover { transform: translateY(-10px); border-color: var(--text-main); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
-.service-card:hover::before { opacity: 1; }
+.service-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.25rem 2rem; transition: border-color 0.3s ease; display: flex; flex-direction: column; height: 100%; }
+.service-card:hover { border-color: var(--text-muted); }
 
-.service-icon-box { width: 60px; height: 60px; background: var(--text-main); color: var(--bg-color); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 2rem; transition: transform 0.4s; }
-.service-card:hover .service-icon-box { transform: rotate(-10deg) scale(1.1); }
+/* Icon sits beside the title instead of in a tile above it */
+.service-head { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+.service-icon { font-size: 1.75rem; color: var(--accent); }
 
-.service-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main); }
+.service-title { font-size: 1.4rem; font-weight: 700; color: var(--text-main); }
 .service-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; flex-grow: 1; }
 .service-list { list-style: none; padding: 0; margin: 0; }
-.service-list li { display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 0.85rem; margin-bottom: 8px; font-weight: 500; opacity: 0.8; }
-.service-list li span { color: #00b894; font-size: 1rem; }
+.service-list li { display: flex; align-items: center; gap: 10px; color: var(--text-main); font-size: 0.9rem; margin-bottom: 8px; font-weight: 500; }
+.service-list li span { color: var(--success); font-size: 1rem; }
 
 /* --- FAQ SECTION --- */
 .faq-grid { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
 .faq-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; transition: all 0.3s ease; }
-.faq-question { padding: 1.5rem; width: 100%; text-align: left; background: transparent; border: none; outline: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--text-main); font-weight: 600; font-size: 1rem; font-family: 'Outfit', sans-serif; }
+.faq-question { padding: 1.5rem; width: 100%; text-align: left; background: transparent; border: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: var(--text-main); font-weight: 600; font-size: 1rem; font-family: 'Outfit', sans-serif; }
+.faq-question:focus-visible { outline-offset: -3px; border-radius: 16px; }
+.faq-answer p { max-width: 68ch; }
 .faq-question:hover { background: rgba(0,0,0,0.02); }
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); padding: 0 1.5rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
 .faq-item.active .faq-answer { max-height: 200px; padding-bottom: 1.5rem; transition: max-height 0.3s ease-in-out; }
@@ -350,30 +380,23 @@ footer {
     margin-bottom: 1.5rem;
 }
 
-/* Status Badge (Titik Hijau Berkedip) */
+/* Status Badge (static dot: availability doesn't change, so it doesn't need to pulse) */
 .status-badge {
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 8px 16px;
-    background: rgba(39, 174, 96, 0.1);
-    border: 1px solid rgba(39, 174, 96, 0.2);
+    background: var(--success-bg);
+    border: 1px solid var(--success-bg);
     border-radius: 50px;
-    color: #27ae60;
+    color: var(--success);
     font-size: 0.85rem;
     font-weight: 600;
 }
 .status-dot {
     width: 8px; height: 8px;
-    background-color: #27ae60;
+    background-color: var(--success);
     border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);
-    animation: pulse-green 2s infinite;
-}
-@keyframes pulse-green {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(39, 174, 96, 0); }
 }
 
 /* Kolom Link */
@@ -402,7 +425,7 @@ footer {
     width: fit-content;
 }
 .footer-links a:hover {
-    color: #00f2fe;
+    color: var(--accent);
     transform: translateX(5px);
 }
 
@@ -429,17 +452,19 @@ footer {
     .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
 }
 
+/* Respect the "reduce motion" system setting: no looping, sliding or flipping */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+    .avatar-img { animation: none; }
+}
+
     </style>
 </head>
-<body data-theme="light"> 
-    
-    <div class="scroll-progress" id="scrollProgress"></div>
-    <div id="toast">Email copied to clipboard!</div>
+<body>
 
-    <div class="ambient-light">
-        <div class="orb orb-1" id="orb1"></div>
-        <div class="orb orb-2" id="orb2"></div>
-    </div>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <nav>
         <a href="#" class="logo">DANNY LUKMANA.</a>
@@ -461,19 +486,16 @@ footer {
             <button class="theme-toggle" id="theme-toggle" aria-label="Switch Theme">
                 <span class="material-icons-round" id="toggle-icon">dark_mode</span>
             </button>
-            <div class="hamburger" id="hamburger">
+            <button class="icon-btn hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-            </div>
+            </button>
         </div>
     </nav>
 
     <section class="hero">
-        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 8px 16px; border-radius: 20px; margin-bottom: 20px; font-size: 0.75rem; letter-spacing: 2px; font-weight: 600;">
-            MY PORTFOLIO
-        </div>
         <div class="avatar-container">
             <div class="avatar-bg"></div>
-            <img src="https://cdn-icons-png.flaticon.com/512/1920/1920990.png" alt="My Avatar" class="avatar-img">
+            <img src="https://cdn-icons-png.flaticon.com/512/1920/1920990.png" alt="Illustrated avatar of Danny" class="avatar-img" width="180" height="180">
             <div class="greeting-badge glass">
                 <span id="greeting-icon">👋</span>
                 <span id="greeting-text">Hi, I'm Danny!</span>
@@ -481,7 +503,7 @@ footer {
         </div>
         <h1 class="hero-name">Danny Lukmana</h1>
         <div class="flip-container"><span class="flip-text">DESIGN DRIVEN</span></div>
-        <p class="subtitle reveal-element"><span id="typewriter"></span><span class="type-cursor"></span></p>
+        <p class="subtitle">I build 360° virtual tours for regional governments and fast landing pages for small businesses.</p>
         <div class="cta-group reveal-element">
             <a href="#projects" class="btn btn-primary">View Projects</a>
             <a href="https://drive.google.com/drive/folders/1erFo3FMDfxmjo3X-fxbA6-JyP8elH9GM?usp=sharing" class="btn btn-glass" target="_blank" rel="noopener" onclick="showToast('Opening CV in Google Drive...')">
@@ -491,33 +513,33 @@ footer {
         </div>
     </section>
 
-    <section class="tech-marquee-section">
-        <div class="marquee-wrapper">
-            <div class="marquee-item"><span class="material-icons-round">code</span> HTML5</div>
-            <div class="marquee-item"><span class="material-icons-round">style</span> CSS3</div>
-            <div class="marquee-item"><span class="material-icons-round">javascript</span> JavaScript</div>
-            <div class="marquee-item"><span class="material-icons-round">data_object</span> TypeScript</div>
-            <div class="marquee-item"><span class="material-icons-round">widgets</span> React JS</div>
-            <div class="marquee-item"><span class="material-icons-round">layers</span> Next.js</div>
-            <div class="marquee-item"><span class="material-icons-round">view_in_ar</span> Pano2VR</div>
-            <div class="marquee-item"><span class="material-icons-round">terminal</span> Node.js</div>
-            <div class="marquee-item"><span class="material-icons-round">brush</span> UI/UX Design</div>
-            <div class="marquee-item"><span class="material-icons-round">code</span> HTML5</div>
-            <div class="marquee-item"><span class="material-icons-round">style</span> CSS3</div>
-            <div class="marquee-item"><span class="material-icons-round">javascript</span> JavaScript</div>
-            <div class="marquee-item"><span class="material-icons-round">data_object</span> TypeScript</div>
-            <div class="marquee-item"><span class="material-icons-round">widgets</span> React JS</div>
-            <div class="marquee-item"><span class="material-icons-round">layers</span> Next.js</div>
-            <div class="marquee-item"><span class="material-icons-round">view_in_ar</span> Pano2VR</div>
-            <div class="marquee-item"><span class="material-icons-round">terminal</span> Node.js</div>
-            <div class="marquee-item"><span class="material-icons-round">brush</span> UI/UX Design</div>
-        </div>
+    <section aria-label="Tech stack">
+        <ul class="tech-stack">
+            <li><span class="material-icons-round" aria-hidden="true">code</span> HTML5</li>
+            <li><span class="material-icons-round" aria-hidden="true">style</span> CSS3</li>
+            <li><span class="material-icons-round" aria-hidden="true">javascript</span> JavaScript</li>
+            <li><span class="material-icons-round" aria-hidden="true">data_object</span> TypeScript</li>
+            <li><span class="material-icons-round" aria-hidden="true">widgets</span> React JS</li>
+            <li><span class="material-icons-round" aria-hidden="true">layers</span> Next.js</li>
+            <li><span class="material-icons-round" aria-hidden="true">view_in_ar</span> Pano2VR</li>
+            <li><span class="material-icons-round" aria-hidden="true">terminal</span> Node.js</li>
+            <li><span class="material-icons-round" aria-hidden="true">brush</span> UI/UX Design</li>
+        </ul>
     </section>
 
     <section id="projects" class="container">
         <h2 class="section-title">Selected Works</h2>
         <div class="grid">
             
+            <div class="card glass tilt-card card-featured">
+                <h3>Virtual Tour 360°</h3>
+                <p>Interactive 360° tours for 9 regions across Indonesia, from Jakarta to Jatiluwih, supporting tourism, transparency, and public services.</p>
+                <div><span class="tag">Pano2VR</span><span class="tag">JavaScript</span><span class="tag">3D Vista</span></div>
+                <button class="btn-view-cert" onclick="openTourModal()" style="width: 100%; text-align: center; margin-top: auto;">
+                    Explore Virtual Tour <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">360</span>
+                </button>
+            </div>
+
             <div class="card glass tilt-card">
                 <h3>Toko Arsip Nusa</h3>
                 <p>Affordable and efficient landing page creation service from my brand, Toko Arsip Nusa, with no hosting cost to accelerate MSMEs’ digital growth.</p>
@@ -542,15 +564,6 @@ footer {
                 <div><span class="tag">HTML/CSS</span><span class="tag">Static Site</span><span class="tag">Serverless</span></div>
                 <button class="btn-view-cert" onclick="window.open('https://arsipnusa.github.io/satekambingpakslamet/', '_blank')" style="width: 100%; text-align: center; margin-top: auto;">
                     Visit Website <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">language</span>
-                </button>
-            </div>
-
-            <div class="card glass tilt-card">
-                <h3>Virtual Tour 360°</h3>
-                <p>Interactive 360° tours for 9 regions across Indonesia, from Jakarta to Jatiluwih, supporting tourism, transparency, and public services.</p>
-                <div><span class="tag">Pano2VR</span><span class="tag">JavaScript</span><span class="tag">3D Vista</span></div>
-                <button class="btn-view-cert" onclick="openTourModal()" style="width: 100%; text-align: center; margin-top: auto;">
-                    Explore Virtual Tour <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">360</span>
                 </button>
             </div>
 
@@ -582,9 +595,8 @@ footer {
             <a class="play-card reveal-element" href="project/maps-badung/" target="_blank" rel="noopener">
                 <img src="project/maps-badung/preview.jpg" alt="3D map of Badung regency in Terra Explorer" class="play-img" loading="lazy">
                 <div class="play-body">
-                    <span class="play-label">3D Interactive Map · Bali</span>
                     <h3>Terra Explorer: Badung</h3>
-                    <p>A 3D tourism map of Badung with 46 places across 6 districts, filterable by category, plus a narrated virtual tour and a Garuda Wisnu Kencana showcase.</p>
+                    <p>A 3D tourism map of Badung, Bali, with 46 places across 6 districts, filterable by category, plus a narrated virtual tour and a Garuda Wisnu Kencana showcase.</p>
                     <div><span class="tag">Three.js</span><span class="tag">WebGL</span><span class="tag">Audio Narration</span></div>
                     <span class="tour-btn">Open Project <span class="material-icons-round">open_in_new</span></span>
                 </div>
@@ -592,9 +604,8 @@ footer {
             <a class="play-card reveal-element" href="project/maps-kotabaru/" target="_blank" rel="noopener">
                 <img src="project/maps-kotabaru/preview.jpg" alt="3D map of Kotabaru regency in Terra Explorer" class="play-img" loading="lazy">
                 <div class="play-body">
-                    <span class="play-label">3D Interactive Map · South Kalimantan</span>
                     <h3>Terra Explorer: Kotabaru</h3>
-                    <p>A 3D island map of Kotabaru with terrain relief and Blender-modeled trees, showing 13 places across 5 districts with a narrated virtual tour.</p>
+                    <p>A 3D island map of Kotabaru, South Kalimantan, with terrain relief and Blender-modeled trees, showing 13 places across 5 districts with a narrated virtual tour.</p>
                     <div><span class="tag">Three.js</span><span class="tag">Blender</span><span class="tag">Terrain</span></div>
                     <span class="tour-btn">Open Project <span class="material-icons-round">open_in_new</span></span>
                 </div>
@@ -689,13 +700,13 @@ footer {
     <div class="about-content-wrapper reveal-element">
         <div class="about-text">
             <h3 style="font-size: 2rem; line-height: 1.2; margin-bottom: 1.5rem;">
-                Transforming complex problems into <span class="about-highlight">elegant interfaces</span>.
+                From 360° virtual tours to landing pages, I build websites people <span class="about-highlight">enjoy using</span>.
             </h3>
             <p>
                 Hello! I'm Danny, a Frontend Developer based in Jakarta. My journey started with a curiosity about how things move on a screen, which led me to master the art of <strong>Pano2VR</strong>, <strong>3D Vista</strong>, <strong>JAVA</strong> and modern web technologies.
             </p>
             <p>
-                I specialize in bridging the gap between design and engineering. I don't just write code; I care deeply about <strong>pixel perfection</strong>, <strong>accessibility</strong>, and creating intuitive user flows that feel natural.
+                I work where design meets engineering: I turn designs into responsive, <strong>accessible</strong> pages and check the details on every screen size before they ship.
             </p>
             <p>
                 When I'm not debugging, you can find me exploring new coffee shops, writing tech blogs, or curating my Lofi playlists.
@@ -711,24 +722,11 @@ footer {
             </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card tilt-card">
-                <span class="stat-number">3+</span>
-                <span class="stat-label">Years Exp.</span>
-            </div>
-            <div class="stat-card tilt-card">
-                <span class="stat-number">10+</span>
-                <span class="stat-label">Projects</span>
-            </div>
-            <div class="stat-card tilt-card">
-                <span class="stat-number">9</span>
-                <span class="stat-label">Virtual Tours</span>
-            </div>
-            <div class="stat-card tilt-card" style="background: var(--text-main); color: var(--bg-color);">
-                <span class="stat-number" style="color: var(--bg-color);">☕</span>
-                <span class="stat-label" style="color: var(--bg-color); opacity: 0.8;">Coffee Driven</span>
-            </div>
-        </div>
+        <ul class="facts">
+            <li><span class="fact-num">3+</span><span class="fact-label">years as a frontend developer</span></li>
+            <li><span class="fact-num">9</span><span class="fact-label">regional virtual tours shipped</span></li>
+            <li><span class="fact-num">10+</span><span class="fact-label">websites for clients and my own brand</span></li>
+        </ul>
     </div>
 </section>
 
@@ -737,10 +735,10 @@ footer {
     <div class="services-grid">
         
         <div class="service-card reveal-element">
-            <div class="service-icon-box">
-                <span class="material-icons-round">code</span>
+            <div class="service-head">
+                <span class="material-icons-round service-icon" aria-hidden="true">code</span>
+                <h3 class="service-title">Modern Web Development</h3>
             </div>
-            <h3 class="service-title">Modern Web Development</h3>
             <p class="service-desc">Building fast, responsive, and accessible websites using the latest React ecosystem. I focus on clean code and performance.</p>
             <ul class="service-list">
                 <li><span class="material-icons-round">check_circle</span>React & Next.js Implementation</li>
@@ -749,11 +747,11 @@ footer {
             </ul>
         </div>
 
-        <div class="service-card reveal-element" style="border-color: rgba(0, 242, 254, 0.3);">
-            <div class="service-icon-box" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);">
-                <span class="material-icons-round">360</span>
+        <div class="service-card reveal-element">
+            <div class="service-head">
+                <span class="material-icons-round service-icon" aria-hidden="true">360</span>
+                <h3 class="service-title">Interactive 360° Tours</h3>
             </div>
-            <h3 class="service-title">Interactive 360° Tours</h3>
             <p class="service-desc">Creating immersive virtual experiences for tourism, real estate, or government institutions using Pano2VR.</p>
             <ul class="service-list">
                 <li><span class="material-icons-round">check_circle</span>Custom Pano2VR Skinning</li>
@@ -763,10 +761,10 @@ footer {
         </div>
 
         <div class="service-card reveal-element">
-            <div class="service-icon-box">
-                <span class="material-icons-round">brush</span>
+            <div class="service-head">
+                <span class="material-icons-round service-icon" aria-hidden="true">brush</span>
+                <h3 class="service-title">UI/UX Implementation</h3>
             </div>
-            <h3 class="service-title">UI/UX Implementation</h3>
             <p class="service-desc">Translating Figma designs into pixel-perfect code with smooth animations and interactions.</p>
             <ul class="service-list">
                 <li><span class="material-icons-round">check_circle</span>Pixel-Perfect Slicing</li>
@@ -820,7 +818,7 @@ footer {
         <div class="final-cta reveal-element">
             <span class="material-icons-round cta-bg-icon">rocket_launch</span>
             <div class="cta-content">
-                <h3 class="cta-title">Ready to build something amazing?</h3>
+                <h3 class="cta-title">Have a project in mind?</h3>
                 <p class="cta-desc">Whether it's a website revamp, a new dashboard, or a 360° virtual tour, let's turn your ideas into reality. Reach out by email or connect through my social channels.</p>
                 <div class="contact-grid">
                 <a href="mailto:dannylukmana.business@gmail.com" class="contact-btn primary">
@@ -858,7 +856,7 @@ footer {
         </div>
 
         <div>
-            <h4 class="footer-heading">Sitemap</h4>
+            <h3 class="footer-heading">Sitemap</h3>
             <ul class="footer-links">
                 <li><a href="#projects">Selected Works</a></li>
                 <li><a href="#playground">Playground</a></li>
@@ -869,7 +867,7 @@ footer {
         </div>
 
         <div>
-            <h4 class="footer-heading">Connect</h4>
+            <h3 class="footer-heading">Connect</h3>
             <ul class="footer-links">
                 <li><a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank">LinkedIn <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
                 <li><a href="https://github.com/dannylukmana" target="_blank">GitHub <span class="material-icons-round" style="font-size: 16px;">north_east</span></a></li>
@@ -889,96 +887,133 @@ footer {
     </div>
 </footer>
 
-    <div class="back-to-top" id="backToTop" onclick="scrollToTop()"><span class="material-icons-round">arrow_upward</span></div>
+    <button class="icon-btn back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top"><span class="material-icons-round" aria-hidden="true">arrow_upward</span></button>
 
-    <div class="chat-launcher" onclick="toggleChat()"><span class="material-icons-round">chat_bubble</span></div>
+    <button class="icon-btn chat-launcher" id="chatLauncher" onclick="toggleChat()" aria-label="Open chat with Danny's assistant" aria-expanded="false" aria-controls="chatWindow"><span class="material-icons-round" aria-hidden="true">chat_bubble</span></button>
 
-    <div class="chat-window" id="chatWindow">
-        <div class="chat-header"><h4><span class="material-icons-round" style="font-size: 1.2rem;">smart_toy</span> Danny's AI</h4><span class="material-icons-round" style="cursor: pointer;" onclick="toggleChat()">close</span></div>
-        <div class="chat-body" id="chatBody"><div class="message bot">Hi! I'm Danny's virtual assistant. Ask me about my skills, experience, or contacts!</div></div>
-        <div class="chat-footer"><input type="text" id="chatInput" class="chat-input" placeholder="Ask me something..." onkeypress="handleEnter(event)"><button class="chat-send" onclick="sendMessage()"><span class="material-icons-round" style="font-size: 1rem;">send</span></button></div>
+    <div class="chat-window" id="chatWindow" role="region" aria-labelledby="chatTitle" inert>
+        <div class="chat-header"><h4 id="chatTitle"><span class="material-icons-round" style="font-size: 1.2rem;" aria-hidden="true">smart_toy</span> Danny's AI</h4><button class="icon-btn chat-close" onclick="toggleChat()" aria-label="Close chat"><span class="material-icons-round" aria-hidden="true">close</span></button></div>
+        <div class="chat-body" id="chatBody" role="log" aria-live="polite"><div class="message bot">Hi! I'm Danny's virtual assistant. Ask me about my skills, experience, or contacts!</div></div>
+        <div class="chat-footer"><label for="chatInput" class="sr-only">Message Danny's assistant</label><input type="text" id="chatInput" class="chat-input" placeholder="Ask me something..." onkeydown="handleEnter(event)"><button class="chat-send" onclick="sendMessage()" aria-label="Send message"><span class="material-icons-round" style="font-size: 1rem;" aria-hidden="true">send</span></button></div>
     </div>
 
-    <div id="certModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeCert()">&times;</span><iframe id="certIframe" src="" allow="autoplay"></iframe></div></div>
-    <div id="tourModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeTourModal()">&times;</span><h2 class="modal-title">Select Destination</h2><div class="tour-grid"><a class="tour-card" href="https://semarang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/960px-Lawang_Sewu_in_Semarang_City.jpg&w=600&h=300&fit=cover&output=webp" alt="Lawang Sewu, Semarang" class="tour-img"><div class="tour-info"><h4>Semarang City</h4><p>Discover the historic charm and modern vibes of Central Java's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jakarta.govirtual.id/urban-tourism/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/960px-Jakarta_CBD.jpg&w=600&h=300&fit=cover&output=webp" alt="Jakarta skyline" class="tour-img"><div class="tour-info"><h4>Jakarta City</h4><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtualtour.lampungselatankab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/960px-Bakauheni_Port.jpg&w=600&h=300&fit=cover&output=webp" alt="Bakauheni Port, Lampung Selatan" class="tour-img"><div class="tour-info"><h4>Lampung Selatan</h4><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtual-tour.tangerangkab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Kantor_bupati_tangerang_-_panoramio.jpg/960px-Kantor_bupati_tangerang_-_panoramio.jpg&w=600&h=300&fit=cover&a=top&output=webp" alt="Tangerang Regent's Office, Tigaraksa" class="tour-img"><div class="tour-info"><h4>Tangerang Regency</h4><p>Navigate through the modern developments and public facilities of Banten.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://lahat.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/960px-Sunrise_Bukit_Besak.jpg&w=600&h=300&fit=cover&a=bottom&output=webp" alt="Sunrise at Bukit Besak, Lahat" class="tour-img"><div class="tour-info"><h4>Lahat Regency</h4><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://bogor.govirtual.id/" target="_blank" rel="noopener"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img"><div class="tour-info"><h4>Bogor Regency</h4><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://medan.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Maimun_Palace_Medan_Indonesia.jpg/960px-Maimun_Palace_Medan_Indonesia.jpg&w=600&h=300&fit=cover&output=webp" alt="Maimun Palace, Medan" class="tour-img"><div class="tour-info"><h4>Medan City</h4><p>Explore the royal heritage and vibrant urban life of North Sumatra's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://deliserdang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Kualanamu_Airport_Terminal_Building.jpg/960px-Kualanamu_Airport_Terminal_Building.jpg&w=600&h=300&fit=cover&output=webp" alt="Kualanamu International Airport, Deli Serdang" class="tour-img"><div class="tour-info"><h4>Deli Serdang Regency</h4><p>Tour the Lubuk Pakam city center and public facilities of North Sumatra's gateway regency.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jatiluwih.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Jatiluwih_UNESCO_rice_terraces.jpg/960px-Jatiluwih_UNESCO_rice_terraces.jpg&w=600&h=300&fit=cover&output=webp" alt="Jatiluwih rice terraces, Bali" class="tour-img"><div class="tour-info"><h4>Jatiluwih Village</h4><p>Wander through Bali's UNESCO-listed rice terraces in immersive 360° views.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a></div></div></div>
+    <div id="certModal" class="modal" role="dialog" aria-modal="true" aria-label="Credential preview"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeCert()" aria-label="Close">&times;</button><iframe id="certIframe" src="" allow="autoplay" title="Credential document"></iframe></div></div>
+    <div id="tourModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tourModalTitle"><div class="modal-content glass"><button class="icon-btn close-btn" onclick="closeTourModal()" aria-label="Close">&times;</button><h2 class="modal-title" id="tourModalTitle">Select Destination</h2><div class="tour-grid"><a class="tour-card" href="https://semarang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/960px-Lawang_Sewu_in_Semarang_City.jpg&w=600&h=300&fit=cover&output=webp" alt="Lawang Sewu, Semarang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Semarang City</h3><p>Discover the historic charm and modern vibes of Central Java's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jakarta.govirtual.id/urban-tourism/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/960px-Jakarta_CBD.jpg&w=600&h=300&fit=cover&output=webp" alt="Jakarta skyline" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jakarta City</h3><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtualtour.lampungselatankab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/960px-Bakauheni_Port.jpg&w=600&h=300&fit=cover&output=webp" alt="Bakauheni Port, Lampung Selatan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lampung Selatan</h3><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtual-tour.tangerangkab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Kantor_bupati_tangerang_-_panoramio.jpg/960px-Kantor_bupati_tangerang_-_panoramio.jpg&w=600&h=300&fit=cover&a=top&output=webp" alt="Tangerang Regent's Office, Tigaraksa" class="tour-img" loading="lazy"><div class="tour-info"><h3>Tangerang Regency</h3><p>Navigate through the modern developments and public facilities of Banten.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://lahat.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/960px-Sunrise_Bukit_Besak.jpg&w=600&h=300&fit=cover&a=bottom&output=webp" alt="Sunrise at Bukit Besak, Lahat" class="tour-img" loading="lazy"><div class="tour-info"><h3>Lahat Regency</h3><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://bogor.govirtual.id/" target="_blank" rel="noopener"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img" loading="lazy"><div class="tour-info"><h3>Bogor Regency</h3><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://medan.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Maimun_Palace_Medan_Indonesia.jpg/960px-Maimun_Palace_Medan_Indonesia.jpg&w=600&h=300&fit=cover&output=webp" alt="Maimun Palace, Medan" class="tour-img" loading="lazy"><div class="tour-info"><h3>Medan City</h3><p>Explore the royal heritage and vibrant urban life of North Sumatra's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://deliserdang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Kualanamu_Airport_Terminal_Building.jpg/960px-Kualanamu_Airport_Terminal_Building.jpg&w=600&h=300&fit=cover&output=webp" alt="Kualanamu International Airport, Deli Serdang" class="tour-img" loading="lazy"><div class="tour-info"><h3>Deli Serdang Regency</h3><p>Tour the Lubuk Pakam city center and public facilities of North Sumatra's gateway regency.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jatiluwih.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Jatiluwih_UNESCO_rice_terraces.jpg/960px-Jatiluwih_UNESCO_rice_terraces.jpg&w=600&h=300&fit=cover&output=webp" alt="Jatiluwih rice terraces, Bali" class="tour-img" loading="lazy"><div class="tour-info"><h3>Jatiluwih Village</h3><p>Wander through Bali's UNESCO-listed rice terraces in immersive 360° views.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a></div></div></div>
 
 <script>
         // --- CONFIGURATION & UTILS ---
-        const toggleBtn = document.getElementById('theme-toggle'); 
-        const body = document.body; 
-        const hamburger = document.getElementById('hamburger'); 
-        const navLinks = document.getElementById('nav-links'); 
-        const navItems = document.querySelectorAll('.nav-link-item'); 
+        // Storage can be blocked (private modes, some in-app browsers); that must never stop the script
+        const store = {
+            get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+            set(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+        };
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const root = document.documentElement;
+        const toggleBtn = document.getElementById('theme-toggle');
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        const navItems = document.querySelectorAll('.nav-link-item');
         const toggleIcon = document.getElementById('toggle-icon');
 
-        function updateIcon(theme) { toggleIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode'; }
-        
-        const savedTheme = localStorage.getItem('theme'); 
-        if (savedTheme) { body.setAttribute('data-theme', savedTheme); updateIcon(savedTheme); } 
-        else { body.setAttribute('data-theme', 'light'); updateIcon('light'); }
-        
-        toggleBtn.addEventListener('click', () => { 
-            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; 
-            body.setAttribute('data-theme', newTheme); 
-            localStorage.setItem('theme', newTheme); 
-            updateIcon(newTheme); 
-        });
-        
-        hamburger.addEventListener('click', () => { navLinks.classList.toggle('active'); hamburger.classList.toggle('toggle'); }); 
-        navItems.forEach(item => { item.addEventListener('click', () => { navLinks.classList.remove('active'); hamburger.classList.remove('toggle'); }); });
+        // The theme itself is applied in <head> before first paint; this keeps the button in sync
+        function updateIcon(theme) {
+            toggleIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+            toggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+        }
+        updateIcon(root.getAttribute('data-theme'));
 
-        // --- ANIMATIONS ---
-        const flipText = document.querySelector('.flip-text'); 
-        const words = ["DESIGN DRIVEN", "FRONTEND DEV", "UI/UX ENTHUSIAST"]; 
-        let wordIndex = 0; 
-        setInterval(() => { 
-            flipText.classList.add('out'); 
-            setTimeout(() => { 
-                wordIndex = (wordIndex + 1) % words.length; 
-                flipText.textContent = words[wordIndex]; 
-                flipText.classList.remove('out');
-            }, 600);
-        }, 4500);
-        
-        const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }; 
-        const globalObserver = new IntersectionObserver((entries) => { 
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); }); 
-        }, observerOptions);
-        
-        document.querySelectorAll('.card, .timeline-item, .section-title, .subtitle, .cta-group, .reveal-element').forEach(el => globalObserver.observe(el));
-
-        // --- TILT EFFECT ---
-        document.querySelectorAll('.tilt-card').forEach(card => { 
-            card.addEventListener('mousemove', (e) => { 
-                const rect = card.getBoundingClientRect(); 
-                const rotateX = ((e.clientY - rect.top - rect.height/2) / (rect.height/2)) * -10; 
-                const rotateY = ((e.clientX - rect.left - rect.width/2) / (rect.width/2)) * 10; 
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`; 
-            }); 
-            card.addEventListener('mouseleave', () => { card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`; }); 
+        toggleBtn.addEventListener('click', () => {
+            const newTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', newTheme);
+            store.set('theme', newTheme);
+            updateIcon(newTheme);
         });
 
-        // --- BACKGROUND ORBS ---
-        const orb1 = document.getElementById('orb1'), orb2 = document.getElementById('orb2'); 
-        document.addEventListener('mousemove', (e) => { 
-            orb1.style.transform = `translate(${e.clientX/window.innerWidth * 50}px, ${e.clientY/window.innerHeight * 50}px)`; 
-            orb2.style.transform = `translate(-${e.clientX/window.innerWidth * 50}px, -${e.clientY/window.innerHeight * 50}px)`; 
-        });
+        function setMenu(open) {
+            navLinks.classList.toggle('active', open);
+            hamburger.classList.toggle('toggle', open);
+            hamburger.setAttribute('aria-expanded', String(open));
+            hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        }
+        hamburger.addEventListener('click', () => setMenu(!navLinks.classList.contains('active')));
+        navItems.forEach(item => item.addEventListener('click', () => setMenu(false)));
 
-        // --- MODALS ---
-        const certModal = document.getElementById('certModal'), certIframe = document.getElementById('certIframe'); 
-        function openCert(url) { certIframe.src = url; certModal.classList.add('active'); document.body.style.overflow = 'hidden'; } 
-        function closeCert() { certModal.classList.remove('active'); certIframe.src = ""; document.body.style.overflow = 'auto'; }
-        
-        const tourModal = document.getElementById('tourModal'); 
-        function openTourModal() { tourModal.classList.add('active'); document.body.style.overflow = 'hidden'; } 
-        function closeTourModal() { tourModal.classList.remove('active'); document.body.style.overflow = 'auto'; }
-        
+        // --- ANIMATIONS (skipped entirely when the visitor asks for reduced motion) ---
+        if (!prefersReducedMotion) {
+            const flipText = document.querySelector('.flip-text');
+            const words = ["DESIGN DRIVEN", "FRONTEND DEV", "UI/UX ENTHUSIAST"];
+            let wordIndex = 0;
+            setInterval(() => {
+                flipText.classList.add('out');
+                setTimeout(() => {
+                    wordIndex = (wordIndex + 1) % words.length;
+                    flipText.textContent = words[wordIndex];
+                    flipText.classList.remove('out');
+                }, 500);
+            }, 4500);
+        }
+
+        // Scroll reveal: content is visible by default and only gets hidden once this is set up
+        if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+            const globalObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+            document.querySelectorAll('.card, .timeline-item, .section-title, .reveal-element').forEach(el => globalObserver.observe(el));
+            root.classList.add('reveal-ready');
+        }
+
+        // --- TILT EFFECT (mouse only) ---
+        if (!prefersReducedMotion && window.matchMedia('(hover: hover)').matches) {
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const rotateX = ((e.clientY - rect.top - rect.height/2) / (rect.height/2)) * -6;
+                    const rotateY = ((e.clientX - rect.left - rect.width/2) / (rect.width/2)) * 6;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+            });
+        }
+
+        // --- MODALS: focus moves into the dialog, stays there, and returns to the opener on close ---
+        let lastFocused = null;
+        function openModal(modal) {
+            lastFocused = document.activeElement;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            modal.querySelector('.close-btn').focus();
+        }
+        function closeModal(modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            if (lastFocused) lastFocused.focus();
+        }
+
+        const certModal = document.getElementById('certModal'), certIframe = document.getElementById('certIframe');
+        function openCert(url) { certIframe.src = url; openModal(certModal); }
+        function closeCert() { closeModal(certModal); certIframe.src = ""; }
+
+        const tourModal = document.getElementById('tourModal');
+        function openTourModal() { openModal(tourModal); }
+        function closeTourModal() { closeModal(tourModal); }
+
         window.onclick = function(event) { if (event.target == certModal) closeCert(); if (event.target == tourModal) closeTourModal(); }
         document.addEventListener('keydown', (event) => {
-            if (event.key !== 'Escape') return;
-            if (certModal.classList.contains('active')) closeCert();
-            if (tourModal.classList.contains('active')) closeTourModal();
+            const activeModal = document.querySelector('.modal.active');
+            if (event.key === 'Escape') {
+                if (activeModal === certModal) closeCert();
+                else if (activeModal === tourModal) closeTourModal();
+                else if (chatWindow.classList.contains('open')) toggleChat();
+                else if (navLinks.classList.contains('active')) { setMenu(false); hamburger.focus(); }
+                return;
+            }
+            // Keep Tab cycling inside an open dialog
+            if (event.key === 'Tab' && activeModal) {
+                const focusables = [...activeModal.querySelectorAll('a[href], button, iframe, input')].filter(el => el.offsetParent !== null);
+                const first = focusables[0], last = focusables[focusables.length - 1];
+                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            }
         });
 
         // --- FOOTER: Jakarta time & weather, MUSIC, GREETING ---
@@ -1034,27 +1069,20 @@ footer {
         }
         setGreeting();
 
-        const typeText = "Crafting digital experiences that are aesthetic, functional, and intuitive."; 
-        const typeElement = document.getElementById('typewriter'); 
-        let typeIndex = 0; 
-        function typeWriter() { 
-            if (typeIndex < typeText.length) { typeElement.textContent += typeText.charAt(typeIndex); typeIndex++; setTimeout(typeWriter, 40); } 
-        } 
-        setTimeout(typeWriter, 500);
-
         // --- SCROLL ---
-        const scrollProgress = document.getElementById('scrollProgress'); 
-        const backToTopBtn = document.getElementById('backToTop'); 
-        
-        window.onscroll = function() { 
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop; 
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight; 
-            const scrolled = (winScroll / height) * 100; 
-            scrollProgress.style.width = scrolled + "%"; 
-            if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) { backToTopBtn.classList.add('visible'); } 
-            else { backToTopBtn.classList.remove('visible'); } 
-        }; 
-        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        const scrollProgress = document.getElementById('scrollProgress');
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            scrollProgress.style.width = (winScroll / height) * 100 + "%";
+            backToTopBtn.classList.toggle('visible', winScroll > 500);
+        }, { passive: true });
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+            document.querySelector('.logo').focus({ preventScroll: true });
+        }
 
         function copyEmail() { 
             const email = "dannylukmana.business@gmail.com"; 
@@ -1069,12 +1097,20 @@ footer {
 
         // --- FAQ LOGIC ---
         const faqQuestions = document.querySelectorAll('.faq-question');
-        faqQuestions.forEach(question => {
+        faqQuestions.forEach((question, index) => {
+            // Tell assistive tech which answer each question opens, and whether it's open
+            const answer = question.nextElementSibling;
+            answer.id = answer.id || `faq-answer-${index}`;
+            question.setAttribute('aria-controls', answer.id);
+            question.setAttribute('aria-expanded', 'false');
             question.addEventListener('click', () => {
                 const item = question.parentElement;
                 const isActive = item.classList.contains('active');
-                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-                if (!isActive) { item.classList.add('active'); }
+                document.querySelectorAll('.faq-item').forEach(i => {
+                    i.classList.remove('active');
+                    i.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                });
+                if (!isActive) { item.classList.add('active'); question.setAttribute('aria-expanded', 'true'); }
             });
         });
 
@@ -1085,8 +1121,17 @@ footer {
         const chatInput = document.getElementById('chatInput');
         const chatBody = document.getElementById('chatBody');
 
-        function toggleChat() { chatWindow.classList.toggle('open'); }
-        function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
+        const chatLauncher = document.getElementById('chatLauncher');
+
+        function toggleChat() {
+            const open = !chatWindow.classList.contains('open');
+            chatWindow.inert = !open; // closed window can't be reached with Tab, regardless of animation timing
+            chatWindow.classList.toggle('open', open);
+            chatLauncher.setAttribute('aria-expanded', String(open));
+            chatLauncher.setAttribute('aria-label', open ? 'Close chat' : "Open chat with Danny's assistant");
+            if (open) chatInput.focus(); else chatLauncher.focus();
+        }
+        function handleEnter(e) { if (e.key === 'Enter' && !e.isComposing) sendMessage(); }
 
         // Knowledge Base Data
         const botKnowledge = {
