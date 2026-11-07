@@ -1,0 +1,107 @@
+{
+ "welcome": {
+  "hash": "7b8c97b20dcf",
+  "dur": 16.52,
+  "asr": 0.89
+ },
+ "tour-intro": {
+  "hash": "fdeee4106fa3",
+  "dur": 17.91,
+  "asr": 0.94
+ },
+ "tour-kec-0": {
+  "hash": "844953535855",
+  "dur": 10.76,
+  "asr": 0.88
+ },
+ "tour-siringlaut": {
+  "hash": "54d875f92225",
+  "dur": 17.48,
+  "asr": 0.94
+ },
+ "tour-kampungnelayan": {
+  "hash": "62d67b14b264",
+  "dur": 17.71,
+  "asr": 0.98
+ },
+ "tour-mamake": {
+  "hash": "18a0a02da363",
+  "dur": 15.6,
+  "asr": 0.96
+ },
+ "tour-gedambaan": {
+  "hash": "8b05783d7ccf",
+  "dur": 13.26,
+  "asr": 0.89
+ },
+ "tour-kec-1": {
+  "hash": "6057202bd171",
+  "dur": 8.6,
+  "asr": 0.92
+ },
+ "tour-meranti": {
+  "hash": "140051e42629",
+  "dur": 17.52,
+  "asr": 1.0
+ },
+ "tour-kec-2": {
+  "hash": "8fb5c201b9b5",
+  "dur": 11.64,
+  "asr": 0.94
+ },
+ "tour-risalo": {
+  "hash": "572f8fcf4042",
+  "dur": 12.97,
+  "asr": 0.86
+ },
+ "tour-tamiang": {
+  "hash": "6774303b5794",
+  "dur": 16.08,
+  "asr": 0.87
+ },
+ "tour-nusadua": {
+  "hash": "1ee19680dae8",
+  "dur": 15.16,
+  "asr": 0.9
+ },
+ "tour-kec-3": {
+  "hash": "1fb04c1462ea",
+  "dur": 11.23,
+  "asr": 0.91
+ },
+ "tour-telukaru": {
+  "hash": "fbbe73987bbf",
+  "dur": 15.77,
+  "asr": 0.86
+ },
+ "tour-kerayaan": {
+  "hash": "5d9e3a75ffbc",
+  "dur": 13.85,
+  "asr": 0.92
+ },
+ "tour-birah": {
+  "hash": "6b4407e93773",
+  "dur": 15.92,
+  "asr": 0.81
+ },
+ "tour-kec-4": {
+  "hash": "5308be734944",
+  "dur": 10.52,
+  "asr": 0.88
+ },
+ "tour-liangudut": {
+  "hash": "5bda6616737e",
+  "dur": 15.26,
+  "asr": 0.84
+ },
+ "tour-hasanbasri": {
+  "hash": "0a9064d5ec19",
+  "dur": 18.03,
+  "asr": 0.91
+ },
+ "tour-end": {
+  "hash": "9deb086c04c7",
+  "dur": 18.16,
+  "asr": 0.94
+ }
+}

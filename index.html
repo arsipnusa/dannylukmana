@@ -13,9 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         /* --- 1. CONFIGURATION --- */
@@ -62,13 +60,14 @@
 
         /* --- 4. NAVIGATION --- */
         nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1200px; padding: 0.8rem 2rem; border-radius: 50px; background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: var(--glass-shadow); }
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; z-index: 1002; }
-        .nav-links { display: flex; gap: 2rem; align-items: center; position: absolute; left: 50%; transform: translateX(-50%); }
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; z-index: 1002; white-space: nowrap; text-decoration: none; color: var(--text-main); }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; transition: color 0.3s; font-weight: 500; }
         .nav-links a:hover { color: var(--text-main); }
         .nav-actions { display: flex; align-items: center; gap: 15px; z-index: 1002; }
         .theme-toggle { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
         .theme-toggle:hover { background: var(--glass-border); }
+        .theme-toggle.is-playing { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); }
         .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
         .bar { width: 25px; height: 2px; background-color: var(--text-main); transition: 0.3s; }
 
@@ -80,8 +79,9 @@
         .greeting-badge { position: absolute; bottom: 10px; right: -40px; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; z-index: 3; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards; opacity: 0; transform: scale(0.5); background: rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.05); white-space: nowrap; color: #2d3436; }
         @keyframes floatAvatar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+        .hero-name { font-size: 1.5rem; font-weight: 600; color: var(--text-main); letter-spacing: 0.5px; margin-bottom: 0.25rem; }
         .flip-container { display: block; perspective: 1000px; height: auto; margin-bottom: 1rem; }
-        .flip-text { display: block; font-size: 6rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; letter-spacing: -2px; color: transparent; -webkit-text-stroke: 2px var(--outline-color); transform-origin: center bottom; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease; opacity: 1; transform: rotateX(0deg); }
+        .flip-text { display: block; font-size: 6rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; letter-spacing: -2px; color: var(--text-main); transform-origin: center bottom; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease; opacity: 1; transform: rotateX(0deg); }
         .flip-text.out { transform: rotateX(-90deg); opacity: 0; }
         .subtitle { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin-bottom: 2.5rem; margin-top: 1rem; min-height: 1.5em;}
         .type-cursor { display: inline-block; width: 2px; height: 1.2em; background-color: var(--text-main); margin-left: 2px; animation: blink 1s infinite; vertical-align: bottom; }
@@ -130,6 +130,9 @@
         /* --- 8. BUTTONS & CERT --- */
         .btn-view-cert { margin-top: 1rem; background: transparent; border: 1px solid var(--text-main); color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; width: fit-content; }
         .btn-view-cert:hover { background: var(--text-main); color: var(--bg-color); }
+        /* Non-clickable label for projects that can't be opened publicly */
+        .project-private { width: 100%; text-align: center; margin-top: auto; cursor: default; border-style: dashed; border-color: var(--text-muted); color: var(--text-muted); }
+        .project-private:hover { background: transparent; color: var(--text-muted); }
         .cert-id { font-size: 0.8rem; font-family: monospace; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; color: var(--text-muted); }
         .cert-header { margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; }
 
@@ -151,27 +154,42 @@
         .close-btn:hover { color: #ff4757; }
         iframe { width: 100%; height: 80vh; border: none; border-radius: 10px; background: #fff; }
         .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .tour-card { background: rgba(255,255,255,0.5); border: 1px solid var(--glass-border); border-radius: 15px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tour-card { background: rgba(255,255,255,0.5); border: 1px solid var(--glass-border); border-radius: 15px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; text-decoration: none; color: inherit; }
         [data-theme="dark"] .tour-card { background: rgba(255,255,255,0.05); }
         .tour-card:hover { transform: translateY(-5px) scale(1.02); border-color: #00f2fe; box-shadow: 0 10px 20px rgba(0, 242, 254, 0.15); }
         .tour-img { width: 100%; height: 150px; object-fit: cover; }
-        .tour-info { padding: 1rem; }
+        .tour-info { padding: 1rem; flex: 1; display: flex; flex-direction: column; }
         .tour-info h4 { margin-bottom: 0.3rem; font-size: 1.1rem; color: var(--text-main); }
-        .tour-info p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+        .tour-info p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1rem; }
+        /* Button pinned to the card bottom so every card in a row lines up */
+        .tour-btn { margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; border: 1px solid var(--text-main); color: var(--text-main); font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease; }
+        .tour-btn .material-icons-round { font-size: 1rem; }
+        .tour-card:hover .tour-btn, .tour-card:focus-visible .tour-btn { background: var(--text-main); color: var(--bg-color); }
         .modal-title { font-size: 1.8rem; margin-bottom: 1rem; text-align: center; color: var(--text-main); }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
 
         /* --- 12. RESPONSIVE --- */
-        @media (max-width: 768px) {
-            nav { justify-content: space-between; padding: 1rem 1.5rem; }
+        /* Logo + 8 links + buttons need ~1112px, so switch to the hamburger menu below 1140px */
+        @media (max-width: 1140px) {
             .nav-links { position: absolute; top: 100%; left: 0; width: 100%; flex-direction: column; align-items: center; background: var(--menu-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; margin-top: 15px; transform: scaleY(0); transform-origin: top; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
             .nav-links.active { transform: scaleY(1); opacity: 1; visibility: visible; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
             .hamburger { display: flex; }
             .hamburger.toggle .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
             .hamburger.toggle .bar:nth-child(2) { opacity: 0; }
             .hamburger.toggle .bar:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-            .flip-text { font-size: 3rem; -webkit-text-stroke: 1px var(--outline-color); }
-            
+        }
+        @media (max-width: 768px) {
+            nav { justify-content: space-between; padding: 1rem 1.5rem; }
+            .logo { font-size: 1.15rem; }
+            .nav-actions { gap: 10px; }
+            .hero-name { font-size: 1.2rem; }
+            .flip-text { font-size: 2.6rem; letter-spacing: -1px; }
+
+            /* Tighter spacing so the page isn't endlessly long on phones */
+            .container { padding: 3.5rem 20px; }
+            .section-title { font-size: 1.6rem; margin-bottom: 2rem; }
+            .card { min-height: 0; padding: 1.75rem; gap: 1rem; }
+
             /* FIX: Ensure grid is single column on mobile and prevent overflow */
             .grid { grid-template-columns: 1fr; }
             
@@ -182,117 +200,19 @@
             .timeline-item.active { transform: translateY(0); }
             .modal-content { padding: 1.5rem; width: 95%; }
             .tour-grid { grid-template-columns: 1fr; }
-            .cursor-dot, .cursor-outline { display: none; }
-            
-            /* --- MOBILE WIDGET FIXES --- */
-            /* Logic Mobile disesuaikan agar tetap hide di kiri */
-            .widget-toggle-btn { bottom: 20px; left: 15px; width: 45px; height: 45px; }
-
-            .floating-widget {
-                bottom: 20px; left: 70px; /* Sebelah kanan tombol toggle */
-                width: auto; max-width: 75%;
-                padding: 10px 15px;
-                justify-content: space-between;
-                background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
-                transform: translateX(-150%); /* Tetap hide ke kiri */
-            }
-            .floating-widget.show {
-                transform: translateX(0); /* Muncul di sebelah tombol */
-            }
-
-            .music-player { gap: 8px; }
-            .music-text { margin-right: 0; max-width: 100px; }
-            .song-title { display: block; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-            .artist-name { display: none; }
-            .clock { font-size: 0.9rem; }
-            .weather { font-size: 0.6rem; }
             
             .greeting-badge { right: -10px; bottom: 0; font-size: 0.75rem; }
             .avatar-container { width: 150px; height: 150px; }
 
-            /* STACK BUTTONS VERTICALLY ON MOBILE RIGHT */
-            .chat-launcher { bottom: 100px; right: 20px; width: 50px; height: 50px; } /* Above Widget */
-            .back-to-top { bottom: 165px; right: 20px; width: 40px; height: 40px; } /* Above Chat */
-            
-            /* MOBILE CHAT WINDOW */
-            .chat-window { width: 90%; right: 5%; bottom: 170px; height: 350px; } /* Centered & Above buttons */
+            /* One floating button per bottom corner */
+            .chat-launcher { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+            .back-to-top { bottom: 20px; left: 20px; width: 44px; height: 44px; }
+            .chat-window { width: 90%; right: 5%; bottom: 85px; height: 350px; }
         }
 
-        /* --- 14. FLOATING WIDGET (MODIFIED FOR TOGGLE) --- */
-        /* Toggle Button */
-        .widget-toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 20px;
-            z-index: 1001; /* Layer diatas widget saat hide/show */
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--text-main);
-            color: var(--bg-color);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        .widget-toggle-btn:hover { transform: scale(1.1); }
-        .widget-toggle-btn span { font-size: 24px; }
-
-        /* Widget Container */
-        .floating-widget { 
-            position: fixed; 
-            bottom: 30px; 
-            left: 85px; /* Digeser ke kanan tombol toggle */
-            z-index: 1000; 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            background: var(--glass-bg); 
-            border: 1px solid var(--glass-border); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            max-width: 90%;
-            
-            /* MODIFIED: Default Hidden State */
-            transform: translateX(-150%); /* Sembunyi ke kiri layar */
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Smooth bouncy effect */
-        }
-        
-        /* Class untuk Memunculkan Widget */
-        .floating-widget.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .music-player { display: flex; align-items: center; gap: 10px; }
-        .music-icon { font-size: 20px; color: var(--text-main); animation: spin 4s linear infinite; animation-play-state: paused; }
-        .music-text { display: flex; flex-direction: column; line-height: 1.2; margin-right: 5px; }
-        .song-title { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
-        .artist-name { font-size: 0.65rem; color: var(--text-muted); }
-        .play-btn { width: 35px; height: 35px; border-radius: 50%; border: none; background: var(--text-main); color: var(--bg-color); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
-        .play-btn:hover { transform: scale(1.1); }
-        .divider { width: 1px; height: 30px; background: var(--line-color); }
-        .status-info { display: flex; flex-direction: column; justify-content: center; }
-        .clock { font-size: 0.9rem; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 2px; }
-        .weather { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-        
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- 15. CUSTOM CURSOR & SCROLL --- */
-        .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
-        .cursor-dot { width: 8px; height: 8px; background-color: var(--text-main); }
-        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--text-main); transition: width 0.2s, height 0.2s, background-color 0.2s; }
-        @media (min-width: 769px) { body { cursor: none; } a, button, .tour-card, .card, .chat-launcher, .chat-window input { cursor: none; } a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, .chat-launcher:hover ~ .cursor-outline { transform: translate(-50%, -50%) scale(1.5); background: rgba(125,125,125,0.1); } }
         .scroll-progress { position: fixed; top: 0; left: 0; width: 0%; height: 3px; background: linear-gradient(90deg, var(--text-main), #00f2fe); z-index: 9999; transition: width 0.1s; }
         
-        .back-to-top { position: fixed; bottom: 30px; right: 30px; width: 45px; height: 45px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 998; }
+        .back-to-top { position: fixed; bottom: 30px; left: 30px; width: 45px; height: 45px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 998; }
         .back-to-top.visible { opacity: 1; pointer-events: all; }
         .back-to-top:hover { transform: translateY(-3px); background: var(--text-main); color: var(--bg-color); }
 
@@ -300,9 +220,9 @@
         #toast.show { visibility: visible; opacity: 1; bottom: 110px; }
 
         /* --- 16. CHATBOT STYLES (DESKTOP DEFAULT) --- */
-        .chat-launcher { position: fixed; bottom: 90px; right: 30px; width: 55px; height: 55px; background: var(--text-main); color: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1001; transition: transform 0.3s ease; }
+        .chat-launcher { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; background: var(--text-main); color: var(--bg-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1001; transition: transform 0.3s ease; }
         .chat-launcher:hover { transform: scale(1.1); }
-        .chat-window { position: fixed; bottom: 160px; right: 30px; width: 320px; height: 400px; background: var(--menu-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 1001; display: flex; flex-direction: column; overflow: hidden; transform: scale(0); transform-origin: bottom right; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .chat-window { position: fixed; bottom: 100px; right: 30px; width: 320px; height: 400px; background: var(--menu-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 1001; display: flex; flex-direction: column; overflow: hidden; transform: scale(0); transform-origin: bottom right; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .chat-window.open { transform: scale(1); }
         .chat-header { background: var(--text-main); color: var(--bg-color); padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         .chat-header h4 { font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
@@ -336,6 +256,18 @@
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* --- PLAYGROUND (side projects) --- */
+.play-intro { color: var(--text-muted); max-width: 640px; margin: -1.5rem 0 2rem; }
+.play-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 2rem; }
+.play-card { display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); background: var(--glass-bg); box-shadow: 0 4px 6px rgba(0,0,0,0.02); text-decoration: none; color: inherit; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+.play-card:hover, .play-card:focus-visible { transform: translateY(-5px); border-color: var(--text-muted); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+.play-img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: #1d2b22; }
+.play-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+.play-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); }
+.play-body h3 { font-size: 1.3rem; }
+.play-body p { color: var(--text-muted); font-size: 0.95rem; }
+.play-card:hover .tour-btn, .play-card:focus-visible .tour-btn { background: var(--text-main); color: var(--bg-color); }
+
 /* --- NEW SERVICES SECTION --- */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem; }
 .service-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem 2rem; transition: all 0.4s ease; position: relative; overflow: hidden; z-index: 1; display: flex; flex-direction: column; height: 100%; }
@@ -363,16 +295,29 @@
 .faq-item.active .faq-icon { transform: rotate(180deg); }
 
 /* --- FINAL CTA BANNER --- */
-.final-cta { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, var(--text-main) 0%, #434343 100%); border-radius: 30px; margin-top: 5rem; position: relative; overflow: hidden; color: var(--bg-color); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+/* Fixed dark gradient: var(--text-main) turns white in dark mode, which hid the white title */
+.final-cta { text-align: center; padding: 4rem 2rem; background: linear-gradient(135deg, #2d3436 0%, #434343 100%); border-radius: 30px; position: relative; overflow: hidden; color: var(--bg-color); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
 .cta-content { position: relative; z-index: 2; }
 .cta-title { font-size: 2.5rem; margin-bottom: 1rem; color: #fff; } /* Force white text */
 .cta-desc { margin-bottom: 2rem; opacity: 0.8; max-width: 600px; margin-left: auto; margin-right: auto; color: #eee; }
 .cta-bg-icon { position: absolute; top: -20px; right: -20px; font-size: 15rem; opacity: 0.05; transform: rotate(-15deg); color: #fff; pointer-events: none; }
 
+/* Contact buttons sit on the dark banner, so they get light-on-dark styling */
+.final-cta .contact-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 0; }
+.final-cta .contact-btn { font: inherit; font-weight: 600; padding: 12px 22px; border-radius: 30px; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); color: #fff; box-shadow: none; }
+.final-cta .contact-btn:hover { background: rgba(255,255,255,0.16); }
+.final-cta .contact-btn.primary { background: #fff; color: #000; border-color: #fff; }
+.final-cta .contact-btn.primary:hover { opacity: 0.9; }
+@media (max-width: 768px) {
+    .final-cta { padding: 3rem 1.25rem; border-radius: 24px; }
+    .cta-title { font-size: 1.8rem; }
+    .final-cta .contact-btn { flex: 1 1 100%; }
+}
+
 /* --- MODERN MINIMALIST FOOTER --- */
 footer {
     margin-top: 6rem;
-    padding: 5rem 20px 2rem;
+    padding: 5rem 20px 6.5rem; /* bottom room so the floating buttons never cover the last row */
     text-align: -webkit-center;
     color: var(--text-muted);
     border-top: 1px solid var(--glass-border);
@@ -473,11 +418,15 @@ footer {
     color: var(--text-muted);
     font-size: 0.9rem;
 }
+.footer-local { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.footer-weather { display: inline-flex; align-items: center; gap: 4px; }
+.footer-weather .material-icons-round { font-size: 16px; }
+.footer-weather[hidden] { display: none; }
 
 /* Responsive */
 @media (max-width: 768px) {
     .footer-content { grid-template-columns: 1fr; gap: 2.5rem; }
-    .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; padding-bottom: 6rem; }
+    .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
 }
 
     </style>
@@ -493,9 +442,10 @@ footer {
     </div>
 
     <nav>
-        <div class="logo">DANNY LUKMANA.</div>
+        <a href="#" class="logo">DANNY LUKMANA.</a>
         <div class="nav-links" id="nav-links">
             <a href="#projects" class="nav-link-item">Work</a>
+            <a href="#playground" class="nav-link-item">Playground</a>
             <a href="#experience" class="nav-link-item">Journey</a>
             <a href="#certifications" class="nav-link-item">Certifications</a>
             <a href="#about" class="nav-link-item">About</a>
@@ -504,6 +454,10 @@ footer {
             <a href="#contact" class="nav-link-item">Contact</a>  
         </div>
         <div class="nav-actions">
+            <button class="theme-toggle" id="playBtn" aria-label="Play lofi music" title="Play lofi music">
+                <span class="material-icons-round" id="playIcon">music_note</span>
+            </button>
+            <audio id="audioPlayer" loop preload="none"><source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg"></audio>
             <button class="theme-toggle" id="theme-toggle" aria-label="Switch Theme">
                 <span class="material-icons-round" id="toggle-icon">dark_mode</span>
             </button>
@@ -525,6 +479,7 @@ footer {
                 <span id="greeting-text">Hi, I'm Danny!</span>
             </div>
         </div>
+        <h1 class="hero-name">Danny Lukmana</h1>
         <div class="flip-container"><span class="flip-text">DESIGN DRIVEN</span></div>
         <p class="subtitle reveal-element"><span id="typewriter"></span><span class="type-cursor"></span></p>
         <div class="cta-group reveal-element">
@@ -532,7 +487,7 @@ footer {
             <a href="https://drive.google.com/drive/folders/1erFo3FMDfxmjo3X-fxbA6-JyP8elH9GM?usp=sharing" class="btn btn-glass" target="_blank" rel="noopener" onclick="showToast('Opening CV in Google Drive...')">
                 Download CV <span class="material-icons-round" style="font-size: 1.1rem;">download</span>
             </a>
-            <button class="btn btn-glass" onclick="triggerConfetti()">Let's Talk</button>
+            <a href="#contact" class="btn btn-glass">Let's Talk</a>
         </div>
     </section>
 
@@ -586,13 +541,13 @@ footer {
                 <p>I designed a landing page for Sate Kambing Pak Slamet to promote a legendary culinary brand with clear visuals and accessible information.</p>
                 <div><span class="tag">HTML/CSS</span><span class="tag">Static Site</span><span class="tag">Serverless</span></div>
                 <button class="btn-view-cert" onclick="window.open('https://arsipnusa.github.io/satekambingpakslamet/', '_blank')" style="width: 100%; text-align: center; margin-top: auto;">
-                    Visit Store <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">storefront</span>
+                    Visit Website <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">language</span>
                 </button>
             </div>
 
             <div class="card glass tilt-card">
                 <h3>Virtual Tour 360°</h3>
-                <p>Interactive visual navigation website for regional government, supporting transparency and public services</p>
+                <p>Interactive 360° tours for 9 regions across Indonesia, from Jakarta to Jatiluwih, supporting tourism, transparency, and public services.</p>
                 <div><span class="tag">Pano2VR</span><span class="tag">JavaScript</span><span class="tag">3D Vista</span></div>
                 <button class="btn-view-cert" onclick="openTourModal()" style="width: 100%; text-align: center; margin-top: auto;">
                     Explore Virtual Tour <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">360</span>
@@ -603,6 +558,9 @@ footer {
                 <h3>Teavaro Funnel Manager</h3>
                 <p>Complex and responsive marketing data management dashboard.</p>
                 <div><span class="tag">Vaadin</span><span class="tag">Java</span></div>
+                <span class="btn-view-cert project-private">
+                    Private Client Dashboard <span class="material-icons-round" style="font-size: 1rem; vertical-align: middle; margin-left: 5px;">lock</span>
+                </span>
             </div>
 
             <div class="card glass tilt-card">
@@ -617,8 +575,35 @@ footer {
         </div>
     </section>
 
+    <section id="playground" class="container">
+        <h2 class="section-title">Playground</h2>
+        <p class="play-intro">Side projects I build for fun, to try ideas and tech outside client work.</p>
+        <div class="play-grid">
+            <a class="play-card reveal-element" href="project/maps-badung/" target="_blank" rel="noopener">
+                <img src="project/maps-badung/preview.jpg" alt="3D map of Badung regency in Terra Explorer" class="play-img" loading="lazy">
+                <div class="play-body">
+                    <span class="play-label">3D Interactive Map · Bali</span>
+                    <h3>Terra Explorer: Badung</h3>
+                    <p>A 3D tourism map of Badung with 46 places across 6 districts, filterable by category, plus a narrated virtual tour and a Garuda Wisnu Kencana showcase.</p>
+                    <div><span class="tag">Three.js</span><span class="tag">WebGL</span><span class="tag">Audio Narration</span></div>
+                    <span class="tour-btn">Open Project <span class="material-icons-round">open_in_new</span></span>
+                </div>
+            </a>
+            <a class="play-card reveal-element" href="project/maps-kotabaru/" target="_blank" rel="noopener">
+                <img src="project/maps-kotabaru/preview.jpg" alt="3D map of Kotabaru regency in Terra Explorer" class="play-img" loading="lazy">
+                <div class="play-body">
+                    <span class="play-label">3D Interactive Map · South Kalimantan</span>
+                    <h3>Terra Explorer: Kotabaru</h3>
+                    <p>A 3D island map of Kotabaru with terrain relief and Blender-modeled trees, showing 13 places across 5 districts with a narrated virtual tour.</p>
+                    <div><span class="tag">Three.js</span><span class="tag">Blender</span><span class="tag">Terrain</span></div>
+                    <span class="tour-btn">Open Project <span class="material-icons-round">open_in_new</span></span>
+                </div>
+            </a>
+        </div>
+    </section>
+
     <section id="experience" class="container">
-        <h2 class="section-title" style="text-align: center; border: none; padding: 0;">Experience & Education</h2>
+        <h2 class="section-title">Experience & Education</h2>
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
@@ -626,7 +611,7 @@ footer {
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">Feb 2025 - Present • Jakarta, Indonesia</div>
                     <h3 style="font-size: 1.25rem;">Teknologi Govirtual Indonesia</h3>
                     <div style="font-style: italic; opacity: 0.9;">Frontend Developer</div>
-                    <p style="margin-top: 0.8rem; color: var(--text-muted); font-size: 0.95rem;">Developed a Virtual Tour website for a regional government institution in Indonesia. The website features interactive 360-degree visual navigation.</p>
+                    <p style="margin-top: 0.8rem; color: var(--text-muted); font-size: 0.95rem;">Building interactive 360° virtual tour websites for regional governments and tourism destinations across Indonesia: 9 regions so far, from Jakarta and Semarang to Medan and Jatiluwih, Bali.</p>
                 </div>
             </div>
              <div class="timeline-item">
@@ -736,12 +721,12 @@ footer {
                 <span class="stat-label">Projects</span>
             </div>
             <div class="stat-card tilt-card">
-                <span class="stat-number">100%</span>
-                <span class="stat-label">Committed</span>
+                <span class="stat-number">9</span>
+                <span class="stat-label">Virtual Tours</span>
             </div>
             <div class="stat-card tilt-card" style="background: var(--text-main); color: var(--bg-color);">
                 <span class="stat-number" style="color: var(--bg-color);">☕</span>
-                <span class="stat-label" style="color: rgba(131, 165, 183, 0.7);">Coffee Driven</span>
+                <span class="stat-label" style="color: var(--bg-color); opacity: 0.8;">Coffee Driven</span>
             </div>
         </div>
     </div>
@@ -830,26 +815,18 @@ footer {
     </div>
 </section>
 
-<div class="container" style="padding-top: 0; padding-bottom: 0;">
-    <div class="final-cta reveal-element">
-        <span class="material-icons-round cta-bg-icon">rocket_launch</span>
-        <div class="cta-content">
-            <h2 class="cta-title">Ready to build something amazing?</h2>
-            <p class="cta-desc">Whether it's a website revamp, a new dashboard, or a 360 virtual tour, let's turn your ideas into reality.</p>
-            <a href="mailto:dannylukmana.business@gmail.com" class="btn" style="background: #fff; color: #000; display: inline-flex; border: none;">
-                Start a Project <span class="material-icons-round" style="margin-left: 8px;">arrow_forward</span>
-            </a>
-        </div>
-    </div>
-</div>
-
     <section id="contact" class="container">
         <h2 class="section-title">Get in Touch</h2>
-        <div class="card glass" style="text-align: center; padding: 4rem;">
-             <h3 style="font-size: 2rem; margin-bottom: 1rem;">Let's Work Together</h3>
-             <p style="margin-bottom: 3rem; color: var(--text-muted); max-width: 600px; margin-left: auto; margin-right: auto;">Interested in collaborating or have a project in mind? Feel free to reach out via email or connect through my social channels.</p>
-             <div class="contact-grid">
-                <button class="contact-btn primary" onclick="copyEmail()">
+        <div class="final-cta reveal-element">
+            <span class="material-icons-round cta-bg-icon">rocket_launch</span>
+            <div class="cta-content">
+                <h3 class="cta-title">Ready to build something amazing?</h3>
+                <p class="cta-desc">Whether it's a website revamp, a new dashboard, or a 360° virtual tour, let's turn your ideas into reality. Reach out by email or connect through my social channels.</p>
+                <div class="contact-grid">
+                <a href="mailto:dannylukmana.business@gmail.com" class="contact-btn primary">
+                    <span class="material-icons-round">mail</span><span>Start a Project</span>
+                </a>
+                <button class="contact-btn" onclick="copyEmail()">
                     <span class="material-icons-round">content_copy</span><span>Copy Email</span>
                 </button>
                 <a href="https://id.linkedin.com/in/muhamad-danny-lukmana-a74a6b295" target="_blank" class="contact-btn">
@@ -861,7 +838,8 @@ footer {
                 <a href="https://github.com/arsipnusa" target="_blank" class="contact-btn">
                     <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg><span>ArsipNusa</span>
                 </a>
-             </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -883,6 +861,7 @@ footer {
             <h4 class="footer-heading">Sitemap</h4>
             <ul class="footer-links">
                 <li><a href="#projects">Selected Works</a></li>
+                <li><a href="#playground">Playground</a></li>
                 <li><a href="#experience">Journey</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#about">About Me</a></li>
@@ -902,8 +881,10 @@ footer {
 
     <div class="footer-bottom">
         <div>&copy; 2026 Danny Lukmana. All Rights Reserved.</div>
-        <div style="display: flex; gap: 20px;">
+        <div class="footer-local">
             <span>Jakarta, Indonesia</span>
+            <span id="clock" title="Local time in Jakarta">--:--</span>
+            <span class="footer-weather" id="weather" hidden><span class="material-icons-round" id="weatherIcon">cloud</span><span id="weatherText"></span></span>
         </div>
     </div>
 </footer>
@@ -919,20 +900,7 @@ footer {
     </div>
 
     <div id="certModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeCert()">&times;</span><iframe id="certIframe" src="" allow="autoplay"></iframe></div></div>
-    <div id="tourModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeTourModal()">&times;</span><h2 class="modal-title">Select Destination</h2><div class="tour-grid"><div class="tour-card" onclick="window.open('https://semarang.govirtual.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/1920px-Lawang_Sewu_in_Semarang_City.jpg?auto=format&fit=crop&w=600&q=80" alt="Semarang" class="tour-img"><div class="tour-info"><h4>Semarang City</h4><p>Discover the historic charm and modern vibes of Central Java's capital.</p></div></div><div class="tour-card" onclick="window.open('https://jakarta.govirtual.id/urban-tourism/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/2560px-Jakarta_CBD.jpg?auto=format&fit=crop&w=600&q=80" alt="Jakarta" class="tour-img"><div class="tour-info"><h4>Jakarta City</h4><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p></div></div><div class="tour-card" onclick="window.open('https://virtualtour.lampungselatankab.go.id/tourism/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/1280px-Bakauheni_Port.jpg?auto=format&fit=crop&w=600&q=80" alt="Lampung" class="tour-img"><div class="tour-info"><h4>Lampung Selatan</h4><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p></div></div><div class="tour-card" onclick="window.open('https://virtual-tour.tangerangkab.go.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Bunderan_kota_tangerang_-_panoramio.jpg/1280px-Bunderan_kota_tangerang_-_panoramio.jpg?auto=format&fit=crop&w=600&q=80" alt="Tangerang" class="tour-img"><div class="tour-info"><h4>Tangerang Regency</h4><p>Navigate through the modern developments and public facilities of Banten.</p></div></div><div class="tour-card" onclick="window.open('https://lahat.govirtual.id/', '_blank')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/1280px-Sunrise_Bukit_Besak.jpg?auto=format&fit=crop&w=600&q=80" alt="Lahat" class="tour-img"><div class="tour-info"><h4>Lahat Regency</h4><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p></div></div><div class="tour-card" onclick="window.open('https://bogor.govirtual.id/', '_blank')"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img"><div class="tour-info"><h4>Bogor Regency</h4><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p></div></div></div></div></div>
-
-    <button class="widget-toggle-btn" id="widgetToggleBtn" aria-label="Toggle Music Widget">
-        <span class="material-icons-round">music_note</span>
-    </button>
-
-    <div class="floating-widget glass" id="floatingWidget">
-        <div class="music-player"><div class="music-info"><span class="music-icon material-icons-round">music_note</span><div class="music-text"><span class="song-title">Lofi Focus Beat</span><span class="artist-name">Chill Vibes</span></div></div><button id="playBtn" class="play-btn"><span class="material-icons-round" id="playIcon">play_arrow</span></button><audio id="audioPlayer" loop><source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg"></audio></div>
-        <div class="divider"></div>
-        <div class="status-info"><div id="clock" class="clock">00:00</div><div class="weather"><span class="material-icons-round" id="weatherIcon" style="font-size: 14px;">location_on</span><span id="weatherText">Jakarta</span></div></div>
-    </div>
-
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
+    <div id="tourModal" class="modal"><div class="modal-content glass"><span class="close-btn" onclick="closeTourModal()">&times;</span><h2 class="modal-title">Select Destination</h2><div class="tour-grid"><a class="tour-card" href="https://semarang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lawang_Sewu_in_Semarang_City.jpg/960px-Lawang_Sewu_in_Semarang_City.jpg&w=600&h=300&fit=cover&output=webp" alt="Lawang Sewu, Semarang" class="tour-img"><div class="tour-info"><h4>Semarang City</h4><p>Discover the historic charm and modern vibes of Central Java's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jakarta.govirtual.id/urban-tourism/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Jakarta_CBD.jpg/960px-Jakarta_CBD.jpg&w=600&h=300&fit=cover&output=webp" alt="Jakarta skyline" class="tour-img"><div class="tour-info"><h4>Jakarta City</h4><p>Explore the bustling metropolis with immersive 360 views of urban landmarks.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtualtour.lampungselatankab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Bakauheni_Port.jpg/960px-Bakauheni_Port.jpg&w=600&h=300&fit=cover&output=webp" alt="Bakauheni Port, Lampung Selatan" class="tour-img"><div class="tour-info"><h4>Lampung Selatan</h4><p>Experience the natural beauty and tourism spots of the gateway to Sumatra.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://virtual-tour.tangerangkab.go.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Kantor_bupati_tangerang_-_panoramio.jpg/960px-Kantor_bupati_tangerang_-_panoramio.jpg&w=600&h=300&fit=cover&a=top&output=webp" alt="Tangerang Regent's Office, Tigaraksa" class="tour-img"><div class="tour-info"><h4>Tangerang Regency</h4><p>Navigate through the modern developments and public facilities of Banten.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://lahat.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sunrise_Bukit_Besak.jpg/960px-Sunrise_Bukit_Besak.jpg&w=600&h=300&fit=cover&a=bottom&output=webp" alt="Sunrise at Bukit Besak, Lahat" class="tour-img"><div class="tour-info"><h4>Lahat Regency</h4><p>Traverse Lahat’s modern urban areas and accessible public facilities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://bogor.govirtual.id/" target="_blank" rel="noopener"><img src="https://www.rumah123.com/seo-cms/assets/large_gunung_salak_ef9b6b9cb3/large_gunung_salak_ef9b6b9cb3.jpg?auto=format&fit=crop&w=600&q=80" alt="Bogor" class="tour-img"><div class="tour-info"><h4>Bogor Regency</h4><p>Discover Bogor’s contemporary city areas supported by convenient and easily accessible public amenities.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://medan.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Maimun_Palace_Medan_Indonesia.jpg/960px-Maimun_Palace_Medan_Indonesia.jpg&w=600&h=300&fit=cover&output=webp" alt="Maimun Palace, Medan" class="tour-img"><div class="tour-info"><h4>Medan City</h4><p>Explore the royal heritage and vibrant urban life of North Sumatra's capital.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://deliserdang.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Kualanamu_Airport_Terminal_Building.jpg/960px-Kualanamu_Airport_Terminal_Building.jpg&w=600&h=300&fit=cover&output=webp" alt="Kualanamu International Airport, Deli Serdang" class="tour-img"><div class="tour-info"><h4>Deli Serdang Regency</h4><p>Tour the Lubuk Pakam city center and public facilities of North Sumatra's gateway regency.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a><a class="tour-card" href="https://jatiluwih.govirtual.id/" target="_blank" rel="noopener"><img src="https://wsrv.nl/?url=thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Jatiluwih_UNESCO_rice_terraces.jpg/960px-Jatiluwih_UNESCO_rice_terraces.jpg&w=600&h=300&fit=cover&output=webp" alt="Jatiluwih rice terraces, Bali" class="tour-img"><div class="tour-info"><h4>Jatiluwih Village</h4><p>Wander through Bali's UNESCO-listed rice terraces in immersive 360° views.</p><span class="tour-btn">Explore Tour <span class="material-icons-round">open_in_new</span></span></div></a></div></div></div>
 
 <script>
         // --- CONFIGURATION & UTILS ---
@@ -968,9 +936,9 @@ footer {
             setTimeout(() => { 
                 wordIndex = (wordIndex + 1) % words.length; 
                 flipText.textContent = words[wordIndex]; 
-                flipText.classList.remove('out'); 
-            }, 600); 
-        }, 3000);
+                flipText.classList.remove('out');
+            }, 600);
+        }, 4500);
         
         const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }; 
         const globalObserver = new IntersectionObserver((entries) => { 
@@ -1007,18 +975,20 @@ footer {
         function closeTourModal() { tourModal.classList.remove('active'); document.body.style.overflow = 'auto'; }
         
         window.onclick = function(event) { if (event.target == certModal) closeCert(); if (event.target == tourModal) closeTourModal(); }
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            if (certModal.classList.contains('active')) closeCert();
+            if (tourModal.classList.contains('active')) closeTourModal();
+        });
 
-        // --- WIDGETS (Time, Music, Greeting) ---
-        function updateClock() { 
-            const now = new Date(); 
-            const hours = String(now.getHours()).padStart(2, '0'); 
-            const minutes = String(now.getMinutes()).padStart(2, '0'); 
-            document.getElementById('clock').textContent = `${hours}:${minutes}`; 
-        } 
-        setInterval(updateClock, 1000); updateClock();
+        // --- FOOTER: Jakarta time & weather, MUSIC, GREETING ---
+        // Always Jakarta time (WIB), since it sits next to "Jakarta, Indonesia" whatever the visitor's timezone
+        const jakartaTime = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
+        function updateClock() { document.getElementById('clock').textContent = `${jakartaTime.format(new Date())} WIB`; }
+        setInterval(updateClock, 10000); updateClock();
 
         // Live Jakarta weather from Open-Meteo (free, no API key).
-        // If the request fails, the widget just keeps showing "Jakarta".
+        // The weather stays hidden if the request fails.
         function weatherIconFor(code, isDay) {
             if (code <= 1) return isDay ? 'wb_sunny' : 'bedtime';
             if (code < 51) return 'cloud';
@@ -1029,32 +999,39 @@ footer {
             .then(res => res.ok ? res.json() : Promise.reject(res.status))
             .then(data => {
                 const current = data.current;
-                document.getElementById('weatherText').textContent = `Jakarta, ${Math.round(current.temperature_2m)}°C`;
+                document.getElementById('weatherText').textContent = `${Math.round(current.temperature_2m)}°C`;
                 document.getElementById('weatherIcon').textContent = weatherIconFor(current.weather_code, current.is_day);
+                document.getElementById('weather').hidden = false;
             })
             .catch(() => {});
 
-        const audio = document.getElementById('audioPlayer'); 
-        const playBtn = document.getElementById('playBtn'); 
-        const playIcon = document.getElementById('playIcon'); 
-        const musicIcon = document.querySelector('.music-icon'); 
-        
-        playBtn.addEventListener('click', () => { 
-            if (audio.paused) { 
-                audio.play(); playIcon.textContent = 'pause'; musicIcon.style.animationPlayState = 'running'; 
-            } else { 
-                audio.pause(); playIcon.textContent = 'play_arrow'; musicIcon.style.animationPlayState = 'paused'; 
-            } 
+        // Music toggle in the navbar
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        function setPlaying(isPlaying) {
+            playIcon.textContent = isPlaying ? 'pause' : 'music_note';
+            playBtn.classList.toggle('is-playing', isPlaying);
+            const label = isPlaying ? 'Pause music' : 'Play lofi music';
+            playBtn.setAttribute('aria-label', label); playBtn.title = label;
+        }
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().then(() => setPlaying(true)).catch(() => showToast("Music couldn't load right now."));
+            } else {
+                audio.pause(); setPlaying(false);
+            }
         });
 
-        function setGreeting() { 
-            const hour = new Date().getHours(); 
-            const greetingText = document.getElementById('greeting-text'); 
-            const greetingIcon = document.getElementById('greeting-icon'); 
-            if (hour >= 5 && hour < 12) { greetingText.textContent = "Good Morning!"; greetingIcon.textContent = "🌤️"; } 
-            else if (hour >= 12 && hour < 18) { greetingText.textContent = "Good Afternoon!"; greetingIcon.textContent = "☀️"; } 
-            else { greetingText.textContent = "Good Evening!"; greetingIcon.textContent = "🌙"; } 
-        } 
+        // Greeting follows the visitor's own time of day
+        function setGreeting() {
+            const hour = new Date().getHours();
+            const greetingText = document.getElementById('greeting-text');
+            const greetingIcon = document.getElementById('greeting-icon');
+            if (hour >= 5 && hour < 12) { greetingText.textContent = "Good morning, I'm Danny!"; greetingIcon.textContent = "🌤️"; }
+            else if (hour >= 12 && hour < 18) { greetingText.textContent = "Good afternoon, I'm Danny!"; greetingIcon.textContent = "☀️"; }
+            else { greetingText.textContent = "Good evening, I'm Danny!"; greetingIcon.textContent = "🌙"; }
+        }
         setGreeting();
 
         const typeText = "Crafting digital experiences that are aesthetic, functional, and intuitive."; 
@@ -1065,21 +1042,7 @@ footer {
         } 
         setTimeout(typeWriter, 500);
 
-        // --- CURSOR & SCROLL ---
-        const cursorDot = document.getElementById('cursor-dot'); 
-        const cursorOutline = document.getElementById('cursor-outline'); 
-        
-        window.addEventListener('mousemove', (e) => { 
-            const posX = e.clientX; const posY = e.clientY; 
-            cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`; 
-            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" }); 
-        });
-        
-        document.querySelectorAll('a, button, .tour-card, .card').forEach(el => { 
-            el.addEventListener('mouseenter', () => { cursorOutline.style.width = '60px'; cursorOutline.style.height = '60px'; cursorOutline.style.backgroundColor = 'rgba(125, 125, 125, 0.05)'; }); 
-            el.addEventListener('mouseleave', () => { cursorOutline.style.width = '40px'; cursorOutline.style.height = '40px'; cursorOutline.style.backgroundColor = 'transparent'; }); 
-        });
-
+        // --- SCROLL ---
         const scrollProgress = document.getElementById('scrollProgress'); 
         const backToTopBtn = document.getElementById('backToTop'); 
         
@@ -1104,13 +1067,6 @@ footer {
             setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000); 
         }
 
-        function triggerConfetti() { 
-            document.getElementById('contact').scrollIntoView({behavior: 'smooth'}); 
-            var count = 200; var defaults = { origin: { y: 0.7 } }; 
-            function fire(particleRatio, opts) { confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) })); } 
-            fire(0.25, { spread: 26, startVelocity: 55 }); fire(0.2, { spread: 60 }); fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 }); fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 }); fire(0.1, { spread: 120, startVelocity: 45 }); 
-        }
-
         // --- FAQ LOGIC ---
         const faqQuestions = document.querySelectorAll('.faq-question');
         faqQuestions.forEach(question => {
@@ -1120,15 +1076,6 @@ footer {
                 document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
                 if (!isActive) { item.classList.add('active'); }
             });
-        });
-
-        // --- WIDGET TOGGLE ---
-        const widgetToggleBtn = document.getElementById('widgetToggleBtn');
-        const floatingWidget = document.getElementById('floatingWidget');
-        widgetToggleBtn.addEventListener('click', () => {
-            floatingWidget.classList.toggle('show');
-            const icon = widgetToggleBtn.querySelector('span');
-            icon.textContent = floatingWidget.classList.contains('show') ? 'close' : 'music_note';
         });
 
         // ==========================================
@@ -1185,6 +1132,12 @@ footer {
                 response_id: "Beberapa proyek saya: Toko Arsip Nusa, Reinkarnails, Sate Kambing Pak Slamet, Virtual Tour 360°, Teavaro Funnel Manager, dan Alodokter Medical Platform.",
                 response_en: "Some of my projects: Toko Arsip Nusa, Reinkarnails, Sate Kambing Pak Slamet, Virtual Tour 360°, Teavaro Funnel Manager, and Alodokter Medical Platform."
             },
+            playground: {
+                id_keywords: ['terra explorer', 'badung', 'kotabaru', 'peta 3d', 'peta', 'iseng', 'side project', 'playground'],
+                en_keywords: ['terra explorer', 'badung', 'kotabaru', '3d map', 'map', 'side project', 'playground', 'hobby'],
+                response_id: "Di bagian Playground ada project iseng saya: Terra Explorer, peta wisata 3D interaktif untuk Badung (Bali) dan Kotabaru (Kalimantan Selatan), dibuat dengan Three.js.",
+                response_en: "In the Playground section you'll find my side projects: Terra Explorer, interactive 3D tourism maps of Badung (Bali) and Kotabaru (South Kalimantan), built with Three.js."
+            },
             arsip_nusa: {
                 id_keywords: ['arsip nusa', 'toko arsip', 'umkm', 'landing page', 'website', 'web'],
                 en_keywords: ['arsip nusa', 'msme', 'umkm', 'landing page', 'website', 'web'],
@@ -1204,10 +1157,11 @@ footer {
                 response_en: "I designed a landing page for Reinkarnails, a custom nail art brand focused on visuals, design details, and brand identity."
             },
             virtual_tour: {
-                id_keywords: ['virtual tour', 'tour 360', 'wisata virtual', '360', 'panorama'],
-                en_keywords: ['virtual tour', '360 tour', 'virtual tourism', 'panorama'],
-                response_id: "Saya membuat landing page Virtual Tour 360 untuk menampilkan lokasi secara interaktif dan imersif.",
-                response_en: "I designed a Virtual Tour 360 landing page to showcase locations in an interactive and immersive way."
+                // Region names (except "jakarta", which the location intent needs) count as tour questions too
+                id_keywords: ['virtual tour', 'tour 360', 'wisata virtual', '360', 'panorama', 'tur', 'semarang', 'lampung', 'tangerang', 'lahat', 'bogor', 'medan', 'deli serdang', 'jatiluwih', 'bali'],
+                en_keywords: ['virtual tour', '360 tour', 'virtual tourism', 'panorama', 'tour', 'semarang', 'lampung', 'tangerang', 'lahat', 'bogor', 'medan', 'deli serdang', 'jatiluwih', 'bali'],
+                response_id: "Saya membangun virtual tour 360° untuk 9 daerah: Semarang, Jakarta, Lampung Selatan, Tangerang, Lahat, Bogor, Medan, Deli Serdang, dan Desa Jatiluwih (Bali). Coba lewat tombol 'Explore Virtual Tour' di bagian Selected Works.",
+                response_en: "I've built 360° virtual tours for 9 regions: Semarang, Jakarta, Lampung Selatan, Tangerang, Lahat, Bogor, Medan, Deli Serdang, and Jatiluwih Village (Bali). Try them via the 'Explore Virtual Tour' button in Selected Works."
             }
         };
 

@@ -1,0 +1,6 @@
+# Dev-only files inside the side projects (not needed on the live site)
+project/*/.claude/
+project/*/.mcp.json
+project/*/tools/
+project/*/docs/
+project/*/sample/

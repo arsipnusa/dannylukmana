@@ -1,0 +1,197 @@
+{
+ "tour-intro": {
+  "hash": "7dedf7e7b383",
+  "dur": 14.83,
+  "asr": 0.96
+ },
+ "tour-kec-0": {
+  "hash": "7ccee1eb59f7",
+  "dur": 10.22,
+  "asr": 0.86
+ },
+ "tour-pandawa": {
+  "hash": "3999e131ba32",
+  "dur": 12.6,
+  "asr": 0.91
+ },
+ "tour-uluwatu": {
+  "hash": "e5b3ad4869b9",
+  "dur": 14.88,
+  "asr": 0.84
+ },
+ "tour-padangpadang": {
+  "hash": "a43eeb35d113",
+  "dur": 11.5,
+  "asr": 0.91
+ },
+ "tour-gwk": {
+  "hash": "43a09d776b2e",
+  "dur": 13.46,
+  "asr": 0.87
+ },
+ "tour-tanjungbenoa": {
+  "hash": "21c21a7440d4",
+  "dur": 10.24,
+  "asr": 0.82
+ },
+ "tour-kec-1": {
+  "hash": "35933513b7ad",
+  "dur": 8.66,
+  "asr": 0.96
+ },
+ "tour-kuta": {
+  "hash": "88677551be18",
+  "dur": 10.63,
+  "asr": 0.93
+ },
+ "tour-mtk": {
+  "hash": "6a92994de85b",
+  "dur": 14.36,
+  "asr": 0.92
+ },
+ "tour-seminyak": {
+  "hash": "76cd7078fde7",
+  "dur": 10.9,
+  "asr": 0.97
+ },
+ "tour-kec-2": {
+  "hash": "dd8923e80de0",
+  "dur": 9.42,
+  "asr": 0.88
+ },
+ "tour-petitenget": {
+  "hash": "3801588a29cd",
+  "dur": 10.96,
+  "asr": 0.93
+ },
+ "tour-canggu": {
+  "hash": "96d4da2b7406",
+  "dur": 11.03,
+  "asr": 0.9
+ },
+ "tour-kec-3": {
+  "hash": "20593798e4ad",
+  "dur": 8.88,
+  "asr": 0.85
+ },
+ "tour-seseh": {
+  "hash": "fe5bfdd046ca",
+  "dur": 10.44,
+  "asr": 0.9
+ },
+ "tour-tamanayun": {
+  "hash": "02f5a2038a72",
+  "dur": 12.68,
+  "asr": 0.91
+ },
+ "tour-kec-4": {
+  "hash": "0679f90b2b33",
+  "dur": 8.23,
+  "asr": 0.88
+ },
+ "tour-pancoransangeh": {
+  "hash": "b44e76653668",
+  "dur": 9.67,
+  "asr": 0.89
+ },
+ "tour-sangeh": {
+  "hash": "9cc73b2decb8",
+  "dur": 11.07,
+  "asr": 0.94
+ },
+ "tour-kec-5": {
+  "hash": "c94052d8ab04",
+  "dur": 8.86,
+  "asr": 1.0
+ },
+ "tour-bangkung": {
+  "hash": "c7d610f23fa5",
+  "dur": 10.02,
+  "asr": 0.93
+ },
+ "tour-nungnung": {
+  "hash": "d10b90e831bf",
+  "dur": 12.11,
+  "asr": 0.94
+ },
+ "tour-end": {
+  "hash": "f0a2d78fc9ab",
+  "dur": 15.48,
+  "asr": 0.88
+ },
+ "gwk-intro": {
+  "hash": "998cfc78c8d3",
+  "dur": 14.16,
+  "asr": 0.95
+ },
+ "gwk-mahkota": {
+  "hash": "9760226c00c6",
+  "dur": 12.56,
+  "asr": 0.94
+ },
+ "gwk-tangan": {
+  "hash": "bfd4df27d449",
+  "dur": 9.89,
+  "asr": 0.92
+ },
+ "gwk-garuda": {
+  "hash": "d75d74bed990",
+  "dur": 10.97,
+  "asr": 1.0
+ },
+ "gwk-sayap": {
+  "hash": "bac21c1cfc64",
+  "dur": 10.95,
+  "asr": 0.76
+ },
+ "gwk-kipas": {
+  "hash": "bcda03cb2b19",
+  "dur": 7.82,
+  "asr": 1.0
+ },
+ "gwk-modul": {
+  "hash": "1ea793b9e49f",
+  "dur": 14.0,
+  "asr": 0.77
+ },
+ "gwk-pedestal": {
+  "hash": "53a765199d8e",
+  "dur": 12.7,
+  "asr": 0.74
+ },
+ "gwk-kisah-1": {
+  "hash": "8d25aedbc993",
+  "dur": 12.4,
+  "asr": 0.91
+ },
+ "gwk-kisah-2": {
+  "hash": "7fca6ee25bec",
+  "dur": 9.88,
+  "asr": 0.96
+ },
+ "gwk-kisah-3": {
+  "hash": "239d97ecd72c",
+  "dur": 9.31,
+  "asr": 0.92
+ },
+ "gwk-kisah-4": {
+  "hash": "8ac509d172d1",
+  "dur": 9.72,
+  "asr": 0.96
+ },
+ "gwk-kisah-5": {
+  "hash": "4594e0922650",
+  "dur": 18.96,
+  "asr": 0.98
+ },
+ "gwk-skala": {
+  "hash": "bd194c6040a0",
+  "dur": 13.79,
+  "asr": 0.85
+ },
+ "welcome": {
+  "hash": "28026141fe37",
+  "dur": 13.83,
+  "asr": 0.92
+ }
+}
